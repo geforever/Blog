@@ -30,6 +30,7 @@ def add_blog(request):
             message = "请检查填写内容"
             title = request.POST['title']
             body = request.POST['body']
+            print("标题为{},内容为{}".format(title,body))
             if title:
                 try:
                     user_name = request.session.get('user_name')

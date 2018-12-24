@@ -12,11 +12,17 @@
         <div class="row">
             <div class="col-12">
                 <br>
-                <!-- 提交文章的表单 -->
-                <form method="post" action="/my_blog/add_blog/" enctype="multipart/form-data">
                     {% if message %}
                         <div class="alert alert-warning">{{ message }}</div>
                     {% endif %}
+                <div class="text-left">
+                    <button class="btn btn-toolbar btn-danger" data-toggle="modal" data-target="#myModal">
+                        上传视频
+                    </button>
+                </div>
+                <!-- 提交文章的表单 -->
+                <form method="post" action="/my_blog/add_blog/" enctype="multipart/form-data">
+
                     <!-- Django中需要POST数据的地方都必须有csrf_token -->
                     {% csrf_token %}
                     <!-- 文章标题 -->
@@ -32,16 +38,11 @@
                         <!-- 文本区域 -->
                         <textarea type="text" class="form-control" id="body" name="body" rows="20"></textarea>
                     </div>
-
-                    <input type="file" name="video" />
-                    <br/>
                     <!-- 提交按钮 -->
                     <button type="submit" value="upload" class="btn btn-primary">完成</button>
                 </form>
 
-                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                    上传
-                </button>
+
                 <!-- 模态框（Modal） -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -55,8 +56,8 @@
                                 </h4>
                             </div>
                             <div class="modal-body">
-                                <form action="" enctype="multipart/form-data" method="POST">
-                                    <input type="file" id="video" name="video" />
+                                <form action="my_blog.html" enctype="multipart/form-data" method="POST">
+                                    <input class="input-lg" type="file" id="video" name="video" />
                                 </form>
                                 <div class="progress" style="width: 500px">
                                     <div id="progress-bar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
@@ -66,7 +67,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                <button class="btn btn-default" data-dismiss="modal">
+                                    关闭
                                 </button>
                                 <button id="btn" class="btn btn-primary">上传</button>
                             </div>
@@ -123,9 +125,11 @@
 
                         var video = $("#video")[0].files[0];
                         var form = new FormData();
+                        var title = $('#title').val();
+                        var body = $('#body').val();
                         form.append('video', video);
-                        form.append('title','123');
-                        form.append('body','123');
+                        form.append('title',title);
+                        form.append('body',body);
                         form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
                         $.ajax({
                             type: 'POST',
@@ -144,6 +148,7 @@
                             }
                         })
                     }
+                    
                 });
             </script>
 
