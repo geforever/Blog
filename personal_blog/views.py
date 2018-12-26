@@ -1,6 +1,8 @@
 from django.shortcuts import render,HttpResponse,redirect
+from django.http import JsonResponse
 from personal_blog.models import Blog
 from login.models import User
+from uservideo.models import Uservideo
 from .forms import AddBlogForm
 import datetime
 import os
@@ -25,59 +27,76 @@ def my_blog(request):
 
 
 def add_blog(request):
-    if request.session.get('is_login', None):
-        if request.method == "POST":
-            message = "请检查填写内容"
-            title = request.POST['title']
-            body = request.POST['body']
-            print("标题为{},内容为{}".format(title,body))
-            if title:
-                try:
-                    user_name = request.session.get('user_name')
-                    author = User.objects.get(user_name=user_name)
-                    if request.FILES.get('video'):#判断是否上传文件
-                        try:
-                            video_file = request.FILES.get('video')
-                            video_name = request.FILES.get('video').name
-                            if str(os.path.splitext(video_name)[1]).lower() != '.mp4':#判断是否是mp4格式文件
-                                message = "该文件不是MP4格式，请重新选择！"
-                                return render(request, 'add_blog.html', locals())
-                            now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')#获取当前时间
-                            video_name = request.session.get('user_name') + "-" \
-                                         + str(request.session.get('user_id')) \
-                                         + "-" + str(now_time) + "-" + video_name
-                            file_second_path = str(request.session.get('user_name'))
-                            if os.path.exists('media/' + file_second_path):#判断是否有名称为用户名字的子目录，没有就创建
-                                file_path = os.path.join('media', file_second_path, video_name)
-                            else:
-                                os.mkdir('media/' + file_second_path)
-                                file_path = os.path.join('media', file_second_path, video_name)
-                            with open(file_path, 'wb') as f:
-                                for chunk in video_file.chunks():#储存视频
-                                    f.write(chunk)
-                                f.close()
-                        except:
-                            message = "文件上传有误"
-                            return render(request, 'add_blog.html', locals())
-                    else:
-                        video_name = None
-
-                    new_blog = Blog.objects.create(
-                        blog_title=title, blog_body=body, author_id=author.id, blog_videoname=video_name
-                    )
-                    new_blog.save()#成功，写入数据库
-                    return redirect('/my_blog/')
-                    #return HttpResponse(video_name)
-                except:
-                    message = "无此用户"
-                    return render(request, 'add_blog.html', locals())
-            else:
-                message = "标题不能为空"
+    try:
+        user_name = request.session.get('user_name')
+        user = User.objects.get(user_name=user_name)
+    except:
+        message = "无此用户！"
+        return render(request, 'my_blog.html', locals())
+    if request.is_ajax():
+        if request.FILES.get('video'):
+            '''如果有视频，就先上传视频保存，并返回视频ID给ajax'''
+            video_file = request.FILES.get('video')
+            video_name = request.FILES.get('video').name
+            if str(os.path.splitext(video_name)[1]).lower() != '.mp4':  # 判断是否是mp4格式文件
+                message = "该文件不是MP4格式，请重新选择！"
                 return render(request, 'add_blog.html', locals())
-    return render(request, 'add_blog.html', locals())
+            now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # 获取当前时间
+            video_name = user.user_name + "-" \
+                         + str(user.id) + "-" + str(now_time) + "-" + video_name
+            file_second_path = str(user.user_name)
+            if os.path.exists('media/video/' + file_second_path):  # 判断是否有名称为用户名字的子目录，没有就创建
+                file_path = os.path.join('media/video', file_second_path, video_name)
+            else:
+                os.mkdir('media/video/' + file_second_path)
+                file_path = os.path.join('media/video', file_second_path, video_name)
+            with open(file_path, 'wb') as f:
+                for chunk in video_file.chunks():  # 储存视频
+                    f.write(chunk)
+                f.close()
+            create_video = Uservideo.objects.create(
+                video_name=video_name, video_path=file_path,video_owner_id_id=user.id
+            )
+            create_video.save()
+            title = request.POST.get('title')
+            body = request.POST.get('body')
+            video_id = Uservideo.objects.get(video_path=file_path).id
+            video_dict = {'video_id': video_id, 'title': title, 'body': body}
+            return JsonResponse(video_dict)
+        if not request.POST.get('video_id'):
+            '''如果没有视频上传'''
+            title = request.POST.get('title')
+            body = request.POST.get('body')
+            if title:
+                new_blog = Blog.objects.create(
+                    blog_title=title, blog_body=body, author_id=user.id, blog_video_id=None
+                )
+                new_blog.save()  # 成功，写入数据库
+                status_dict = {'status': 1, 'content': '新增成功'}
+                return JsonResponse(status_dict)
+            else:
+                status_dict = {'status': 0, 'content':'新增失败，标题不能为空！'}
+                return JsonResponse(status_dict)
+        video_id = request.POST.get('video_id')
+        if request.POST.get('title'):
+            title = request.POST.get('title')
+            body = request.POST.get('body')
+            new_blog = Blog.objects.create(
+                blog_title=title, blog_body=body, author_id=user.id, blog_video_id=video_id
+            )
+            new_blog.save()
+            status_dict = {'status': 1 ,'content': '新增成功'}
+            return JsonResponse(status_dict)
+        status_dict = {'status': 0, 'content': '新增失败，标题不能为空！'}
+        return JsonResponse(status_dict)
+    return render(request, 'add_blog.html')
 
 
 def article_detail(request, id):
     id = int(id)
     article_detail = Blog.objects.get(id=id)
-    return render(request, 'detail.html', {'article_detail': article_detail})
+    if article_detail.blog_video_id:
+        uservideo = Uservideo.objects.get(id=article_detail.blog_video_id)
+        return render(request, 'detail.html', {'article_detail': article_detail, 'uservideo': uservideo})
+    else:
+        return render(request, 'detail.html', {'article_detail': article_detail})

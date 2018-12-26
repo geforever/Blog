@@ -1,5 +1,6 @@
 from django import forms
 from captcha.fields import CaptchaField
+from .models import User
 
 class UserForm(forms.Form):
     username = forms.CharField(label="用户名", max_length=128, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -18,3 +19,7 @@ class RegisterForm(forms.Form):
     sex = forms.ChoiceField(label="性别", choices=gender)
     captcha = CaptchaField(label="验证码")
 
+class UserInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['user_name', 'password', 'email', 'sex']

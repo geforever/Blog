@@ -21,6 +21,7 @@ from Blog.settings import MEDIA_ROOT
 import login.views as view
 import personal_blog.views as blog_view
 import BBS.views as BBS_view
+import userprofile.views as profile_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
     url(r'^login/', view.login),
     url(r'^register/', view.register),
     url(r'^logout/', view.logout),
+    url(r'^userinfo/', profile_view.profile_edit),
     url(r'^blog/$', blog_view.blog),
     url(r'^captcha', include('captcha.urls')),
     url(r'^my_blog/$', blog_view.my_blog),

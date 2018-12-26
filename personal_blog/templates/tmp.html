@@ -12,12 +12,19 @@
         <div class="row">
             <div class="col-12">
                 <br>
-                <!-- 提交文章的表单 -->
-                <form method="POST" action="/my_blog/add_blog/" enctype="multipart/form-data">
                     {% if message %}
                         <div class="alert alert-warning">{{ message }}</div>
                     {% endif %}
+                <div class="text-left">
+                    <button class="btn btn-toolbar btn-danger" data-toggle="modal" data-target="#myModal">
+                        上传视频
+                    </button>
+                </div>
+                <!-- 提交文章的表单 -->
+                <form method="post" action="/my_blog/add_blog/" enctype="multipart/form-data">
+
                     <!-- Django中需要POST数据的地方都必须有csrf_token -->
+                    {% csrf_token %}
                     <!-- 文章标题 -->
                     <div class="form-group">
                         <!-- 标签 -->
@@ -31,73 +38,119 @@
                         <!-- 文本区域 -->
                         <textarea type="text" class="form-control" id="body" name="body" rows="20"></textarea>
                     </div>
-                    <input type="file" id="video" name="video" />
-                    <div class="progress" style="width: 500px">
-                        <div id="progress-bar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
-                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                            <span class="sr-only">40% Complete (success)</span>
-                        </div>
-                    </div>
                     <!-- 提交按钮 -->
-                    <button id="btn" value="upload" class="btn btn-primary">完成</button>
+                    <button type="button" value="upload" class="btn btn-primary">完成</button>
                 </form>
 
-<script src="{% static 'js/jquery-3.2.1.js' %}"></script>
-<script>
-    $(function () {
-        $("#btn").on('click', function () {
-            UploadFile();
-        });
 
-        $("#video").change(function () {
-            $("#progress-bar").css("width", 0);
-        });
+                <!-- 模态框（Modal） -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    &times;
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">
+                                    文件上传
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="my_blog.html" enctype="multipart/form-data" method="POST">
+                                    <input class="input-lg" type="file" id="video" name="video" accept="video/mp4"/>
+                                </form>
+                                <div class="progress" style="width: 500px">
+                                    <div id="progress-bar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                                        aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                        <span class="sr-only">40% Complete (success)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-default" data-dismiss="modal">
+                                    关闭
+                                </button>
+                                <button id="btn" class="btn btn-primary">上传</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+            <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+            <script>
+                $(function () {
+                    $("#btn").click(function () {
+                        UploadFile();
+                    });
 
-        // ajax + jQuery上传
-        function UploadFile() {
-            var xhrOnProgress = function (fun) {
-                xhrOnProgress.onprogress = fun; //绑定监听
-                //使用闭包实现监听绑
-                return function () {
-                    //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
-                    var xhr = $.ajaxSettings.xhr();
-                    //判断监听函数是否为函数
-                    if (typeof xhrOnProgress.onprogress !== 'function')
-                        return xhr;
-                    //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
-                    if (xhrOnProgress.onprogress && xhr.upload) {
-                        xhr.upload.onprogress = xhrOnProgress.onprogress;
+                    $("#video").change(function () {
+                        $("#progress-bar").css("width", 0);
+                    });
+
+                    // ajax + jQuery上传
+                    function UploadFile() {
+                        var filetypes = ["",".mp4",",MP4"];
+                        var filepath = document.getElementById("video").value;
+                            var isnext = false;
+                            var fileend = filepath.substring(filepath.lastIndexOf("."));
+                            if (filetypes && filetypes.length > 0) {
+                                for (var i = 0; i < filetypes.length; i++) {
+                                    if (filetypes[i] == fileend) {
+                                        isnext = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!isnext) {
+                                alert('不接受此文件类型,请上传mp4格式的文件！\r\n');
+                                return false;
+                            }
+
+                        var xhrOnProgress = function (fun) {
+                            xhrOnProgress.onprogress = fun; //绑定监听
+                            //使用闭包实现监听绑
+                            return function () {
+                                //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+                                var xhr = $.ajaxSettings.xhr();
+                                //判断监听函数是否为函数
+                                if (typeof xhrOnProgress.onprogress !== 'function')
+                                    return xhr;
+                                //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+                                if (xhrOnProgress.onprogress && xhr.upload) {
+                                    xhr.upload.onprogress = xhrOnProgress.onprogress;
+                                }
+                                return xhr;
+                            }
+                        }
+
+                        var video = $("#video")[0].files[0];
+                        var form = new FormData();
+                        //var title = $('#title').val();
+                        //var body = $('#body').val();
+                        form.append('video', video);
+                        //form.append('title',title);
+                        //form.append('body',body);
+                        form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                        $.ajax({
+                            type: 'POST',
+                            url: '',
+                            data: form,
+                            processData: false,  // 告诉jquery不转换数据
+                            contentType: false,  // 告诉jquery不设置内容格式
+                            xhr: xhrOnProgress(function (e) {
+                                var percent = e.loaded / e.total;
+                                $("#progress-bar").css("width", (percent * 500));
+                            }),
+
+                            success: function(arg) {
+                                console.log(arg);
+
+                            }
+                        })
                     }
-                    return xhr;
-                }
-            }
 
-            var file = $("#video")[0].files[0];
-            var form = new FormData();
-            form.append('title');
-            form.append('body');
-            form.append('video', file);
-            form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
-            $.ajax({
-                type: 'POST',
-                url: '',
-                data: form,
-                processData: false,  // 告诉jquery不转换数据
-                contentType: false,  // 告诉jquery不设置内容格式
-                xhr: xhrOnProgress(function (e) {
-                    var percent = e.loaded / e.total;
-                    $("#progress-bar").css("width", (percent * 500));
-                }),
-
-                success: function (arg) {
-                    console.log(arg);
-
-                }
-            })
-        }
-    });
-</script>
-
+                });
+            </script>
 
             </div>
         </div>
