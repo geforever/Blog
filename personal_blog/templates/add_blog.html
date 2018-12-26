@@ -15,13 +15,8 @@
                     {% if message %}
                         <div class="alert alert-warning">{{ message }}</div>
                     {% endif %}
-                <div class="text-left">
-                    <button class="btn btn-toolbar btn-danger" data-toggle="modal" data-target="#myModal">
-                        上传视频
-                    </button>
-                </div>
+
                 <!-- 提交文章的表单 -->
-                <form method="post" action="/my_blog/add_blog/" enctype="multipart/form-data">
 
                     <!-- Django中需要POST数据的地方都必须有csrf_token -->
                     {% csrf_token %}
@@ -39,8 +34,18 @@
                         <textarea type="text" class="form-control" id="body" name="body" rows="20"></textarea>
                     </div>
                     <!-- 提交按钮 -->
-                    <button type="submit" value="upload" class="btn btn-primary">完成</button>
-                </form>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <button type="button" id="up" name="up" class="btn btn-primary">完成</button>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="col-lg-offset-8">
+                                <button class="btn btn-toolbar btn-danger" data-toggle="modal" data-target="#myModal">
+                                上传视频
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
 
                 <!-- 模态框（Modal） -->
@@ -57,7 +62,7 @@
                             </div>
                             <div class="modal-body">
                                 <form action="my_blog.html" enctype="multipart/form-data" method="POST">
-                                    <input class="input-lg" type="file" id="video" name="video" />
+                                    <input class="input-lg" type="file" id="video" name="video" accept="video/mp4"/>
                                 </form>
                                 <div class="progress" style="width: 500px">
                                     <div id="progress-bar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
@@ -77,17 +82,48 @@
                 </div>
             <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
             <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+
             <script>
                 $(function () {
                     $("#btn").click(function () {
                         UploadFile();
                     });
 
+                    $("#up").click(function () {
+                        upblog();
+                    })
+
                     $("#video").change(function () {
                         $("#progress-bar").css("width", 0);
                     });
+                    var video_id="";
+                    //完成新增页面，上传字段给后端
+                    function upblog(){
+                        var form = new FormData();
+                        var title = $('#title').val();
+                        var body = $('#body').val();
+                        form.append('title',title);
+                        form.append('body',body);
+                        form.append('video_id', video_id);
+                        form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+                        $.ajax({
+                            type: 'POST',
+                            url: '',
+                            data: form,
+                            processData: false,  // 告诉jquery不转换数据
+                            contentType: false,
+                            success: function(data) {
+                                console.log(data);
+                                if(data['status'] == 1){
+                                    alert(data['content']);
+                                    location.reload();
+                                }
+                                //alert("新增完成！")
 
-                    // ajax + jQuery上传
+                            }
+                        })
+                    }
+
                     function UploadFile() {
                         var filetypes = ["",".mp4",",MP4"];
                         var filepath = document.getElementById("video").value;
@@ -121,15 +157,15 @@
                                 }
                                 return xhr;
                             }
-                        }
+                        };
 
                         var video = $("#video")[0].files[0];
                         var form = new FormData();
-                        var title = $('#title').val();
-                        var body = $('#body').val();
+                        //var title = $('#title').val();
+                        //var body = $('#body').val();
                         form.append('video', video);
-                        form.append('title',title);
-                        form.append('body',body);
+                        form.append('title','');
+                        form.append('body','');
                         form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
                         $.ajax({
                             type: 'POST',
@@ -141,11 +177,23 @@
                                 var percent = e.loaded / e.total;
                                 $("#progress-bar").css("width", (percent * 500));
                             }),
+                            dataType:'json',
+                            success: function(data) {
+                                //alert(data);
+                                for(var i=0;i<data.length;i++){
+                                    var video_id_1 = data[i]['video_id'];
+                                    var title = data[i]['title'];
+                                    var body = data[i]['body'];
+                                }
+                                console.log(data['video_id'],data['title'],data['body']);
+                                video_id = data['video_id']
 
-                            success: function (arg) {
-                                console.log(arg);
-
-                            }
+                            },
+                            //error:function () {
+                                //alert("请求错误，请填写标题！");
+                                //$('#myModal').modal('hide');
+                                //location.reload();
+                            //}
                         })
                     }
                     
