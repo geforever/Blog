@@ -34,5 +34,3 @@ def profile_edit(request):
         content = {'profile_form': profile_form, 'profile': profile, 'user': user}
         return render(request, 'userinfo.html', content)
 
-    else:
-        return HttpResponse("请使用GET或者POST请求")

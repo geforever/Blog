@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', view.index),
     url(r'^index/', view.index),
-    url(r'^login/', view.login),
+    #url(r'^login/', view.login),
     url(r'^register/', view.register),
     url(r'^logout/', view.logout),
     url(r'^userinfo/', profile_view.profile_edit),

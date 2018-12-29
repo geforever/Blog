@@ -1,16 +1,56 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
 from login.models import User
-from login.forms import UserForm
+#from login.forms import UserForm
+from login.forms import Captcha
+from captcha.models import CaptchaStore
+from captcha.helpers import captcha_image_url
 from login.forms import RegisterForm
 
 # Create your views here.
 
 
 def index(request):
-    pass
-    return render(request, 'index.html')
+    status_duct = {'status': 0, 'message': '登录异常！'}
+    #if request.session.get('is_login', None):
+        #return redirect('/my_blog/')
+    if request.is_ajax():
+        get_username = request.POST.get('username')
+        get_password = request.POST.get('password')
+        captcha = request.POST.get('captcha')  # 前端的验证码
+        try:
+            user = User.objects.get(user_name=get_username)
+            if get_password == user.password:
+                id_captcha_0 = request.POST.get('id_captcha_0')  # 前端验证码图片
+                get_captcha = CaptchaStore.objects.get(hashkey=id_captcha_0)#测到验证码图片对应的验证码
+                if str(captcha).lower() == get_captcha.response:
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.user_name
+                    status_duct['status'] = 1
+                    status_duct['message'] = "登录成功！"
+                    return JsonResponse(status_duct)
+                else:
+                    status_duct['status'] = -1
+                    status_duct['message'] = "验证码错误！"
+                    return JsonResponse(status_duct)
+            else:
+                status_duct['status'] = -1
+                status_duct['message'] = "密码错误！"
+                return JsonResponse(status_duct)
+        except:
+            status_duct['status'] = -1
+            status_duct['message'] = "无此用户！"
+            return JsonResponse(status_duct)
+    if request.method == 'GET':
+        hashkey = CaptchaStore.generate_key()
+        image_url = captcha_image_url(hashkey)
+        captcha = {'hashkey': hashkey, 'image_url': image_url}
+        return render(request, 'base.html', captcha)
 
+'''
 def login(request):
     if request.session.get('is_login', None):
         return redirect('/index/')
@@ -32,10 +72,11 @@ def login(request):
                     message = "密码不正确！"
             except:
                 message = "用户不存在！"
-        return render(request, 'login.html', locals())#{"message": message}
-
-    login_form = UserForm()
-    return render(request, 'login.html', locals())
+        return render(request, 'base.html', locals())#{"message": message}
+    if request.method == "GET":
+        login_form = UserForm()
+        return render(request, 'base.html', {'login_form': login_form})
+'''
 
 
 def register(request):
@@ -65,7 +106,7 @@ def register(request):
 
                 new_user = User.objects.create()
                 new_user.user_name = username
-                new_user.password = password1
+                new_user.password = make_password(password1)
                 new_user.email = email
                 new_user.sex = sex
                 new_user.save()

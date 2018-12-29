@@ -75,7 +75,7 @@
                                 <button class="btn btn-default" data-dismiss="modal">
                                     关闭
                                 </button>
-                                <button id="btn" class="btn btn-primary">上传</button>
+                                <button id="vbtn" class="btn btn-primary">上传</button>
                             </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal -->
@@ -85,13 +85,13 @@
 
             <script>
                 $(function () {
-                    $("#btn").click(function () {
+                    $("#vbtn").click(function () {
                         UploadFile();
                     });
 
                     $("#up").click(function () {
                         upblog();
-                    })
+                    });
 
                     $("#video").change(function () {
                         $("#progress-bar").css("width", 0);
@@ -118,9 +118,11 @@
                                     alert(data['content']);
                                     location.reload();
                                 }
-                                //alert("新增完成！")
+                                if(data['status'] != 1){
+                                    alert(data['content']);
+                                }
 
-                            }
+                            },
                         })
                     }
 
@@ -177,26 +179,15 @@
                                 var percent = e.loaded / e.total;
                                 $("#progress-bar").css("width", (percent * 500));
                             }),
-                            dataType:'json',
+                            //dataType:'json',
                             success: function(data) {
-                                //alert(data);
-                                for(var i=0;i<data.length;i++){
-                                    var video_id_1 = data[i]['video_id'];
-                                    var title = data[i]['title'];
-                                    var body = data[i]['body'];
-                                }
-                                console.log(data['video_id'],data['title'],data['body']);
-                                video_id = data['video_id']
+                                console.log(data);
+                                video_id = data['video_id'];
 
                             },
-                            //error:function () {
-                                //alert("请求错误，请填写标题！");
-                                //$('#myModal').modal('hide');
-                                //location.reload();
-                            //}
                         })
                     }
-                    
+
                 });
             </script>
 

@@ -13,6 +13,7 @@
               {% if message %}
                 <div class="alert alert-warning">{{ message }}</div>
               {% endif %}
+              {% csrf_token %}
               <h2 class="text-center">欢迎登录</h2>
                 <div class="form-group">
                     {{ login_form.username.label_tag }}

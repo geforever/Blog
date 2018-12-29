@@ -54,8 +54,8 @@
                     </ul>
                 </li>
               {% else %}
-
-              <button class="btn btn-primary btn-xm" data-toggle="modal" data-target="#myModal">登录</button>
+                <li><a href="#" class="glyphicon glyphicon-log-in" data-toggle="modal" data-target="#myModal">登录</a> </li>
+                <li><a href="/register/" class="glyphicon glyphicon-check">注册</a> </li>
                   <!-- 模态框 ——>
                   <!-->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -66,46 +66,76 @@
 				                <h4 class="modal-title" id="myModalLabel">登录</h4>
 			                </div>
 			                <div class="modal-body">
-
-                            <form class='form-login' method="post">
                                 {% if message %}
                                     <div class="alert alert-warning">{{ message }}</div>
                                 {% endif %}
                                 <h2 class="text-center">欢迎登录</h2>
                                     <div class="form-group">
-                                        {{ login_form.username.label_tag }}
-                                        {{ login_form.username }}
+                                        <label for="username" class="col-sm-2 control-label">用户名:</label>
+                                        <input type="text" class="form-control" id="username" name="username" />
                                     </div>
                                     <div class="form-group">
-                                        {{ login_form.password.label_tag }}
-                                        {{ login_form.password }}
+                                        <label for="password" class="col-sm-2 control-label">密码:</label>
+                                        <input type="password" class="form-control" id="password" name="password" />
                                     </div>
-                                    <div class="form-group">
-                                        {{ login_form.captcha.errors }}
-                                        {{ login_form.captcha.label_tag }}
-                                        {{ login_form.captcha }}
-                                    </div>
-
+                                        <div id="captcha_div">
+                                            <input type="text" name='captcha' id='captcha' class="form-control" placeholder="Captcha"
+                                                   required style="width: 55%;display: inline-block;margin-right: 8%;">
+                                            <a href="#" class="captcha"><img src="{{ image_url }}" alt="点击换一张" id="id_captcha"></a>
+                                        <input value="{{ hashkey }}" name="hashkey" type="hidden" id="id_captcha_0">
+                                        </div>
                                     <div class="modal-footer">
                                     <button type="reset" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                    <button type="submit" class="btn btn-primary">提交更改</button>
+                                    <button type="button" class="btn btn-default" id="btn" name="btn">登录</button>
                                     </div>
-                            </form>
-
-
-
                             </div>
 		                </div><!-- /.modal-content -->
 	                </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-
-                <li><a href="/login/" class="glyphicon glyphicon-log-in">登录</a> </li>
-                <li><a href="/register/" class="glyphicon glyphicon-check">注册</a> </li>
               {% endif %}
-
           </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
+    <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script>
+        $(function () {
+            $('#btn').click(function () {
+                login();
+            });
+            function login() {
+                var form = new FormData;
+                var username=$('#username').val();
+                var password=$('#password').val();
+                var captcha=$('#captcha').val();
+                var id_captcha_0=$('#id_captcha_0').val();
+                form.append('username', username);
+                form.append('password', password);
+                form.append('captcha', captcha);
+                form.append('id_captcha_0', id_captcha_0);
+                form.append('csrfmiddlewaretoken', "{{ csrf_token }}");
+                $.ajax({
+                    type: 'POST',
+                    url: '',
+                    data: form,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        //console.log(data);
+                        if(data['status'] == 1){
+                            alert(data['message']);
+                            location.reload();
+                        }
+                        if(data['status'] != 1){
+                            alert(data['message']);
+                        }
+                    }
+                })
+            }
+
+        });
+    </script>
+
 
     {% block content %}
 
@@ -115,5 +145,6 @@
 
     <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
     <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+
   </body>
 </html>

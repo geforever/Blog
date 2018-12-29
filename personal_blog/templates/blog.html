@@ -5,9 +5,7 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
-    {% if not request.session.is_login %}
-    <h1>这是Blog页面！您尚未登录</h1>
-    {% else %}
+
     <div class="container">
     <div class="col-md-6">
     <div class="page-header">
@@ -22,5 +20,4 @@
     </div>
     </div>
 
-    {% endif %}
 {% endblock %}

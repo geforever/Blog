@@ -54,7 +54,7 @@ def add_blog(request):
                 for chunk in video_file.chunks():  # 储存视频
                     f.write(chunk)
                 f.close()
-            create_video = Uservideo.objects.create(
+            create_video = Uservideo.objects.create(#执行SQL语句
                 video_name=video_name, video_path=file_path,video_owner_id_id=user.id
             )
             create_video.save()
@@ -75,7 +75,7 @@ def add_blog(request):
                 status_dict = {'status': 1, 'content': '新增成功'}
                 return JsonResponse(status_dict)
             else:
-                status_dict = {'status': 0, 'content':'新增失败，标题不能为空！'}
+                status_dict = {'status': -1, 'content': '新增失败，标题不能为空！'}
                 return JsonResponse(status_dict)
         video_id = request.POST.get('video_id')
         if request.POST.get('title'):
@@ -85,9 +85,9 @@ def add_blog(request):
                 blog_title=title, blog_body=body, author_id=user.id, blog_video_id=video_id
             )
             new_blog.save()
-            status_dict = {'status': 1 ,'content': '新增成功'}
+            status_dict = {'status': 1, 'content': '新增成功'}
             return JsonResponse(status_dict)
-        status_dict = {'status': 0, 'content': '新增失败，标题不能为空！'}
+        status_dict = {'status': -1, 'content': '新增失败，标题不能为空！'}
         return JsonResponse(status_dict)
     return render(request, 'add_blog.html')
 
