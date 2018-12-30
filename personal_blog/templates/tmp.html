@@ -1,164 +1,349 @@
-{% extends 'base.html' %}
+
 {% load staticfiles %}
-{% block title %}Blog{% endblock %}
-{% block css %}
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
-{% endblock %}
-{% block content %}
-    {%  if not request.session.user_name %}
-    <h1>抱歉，没有登录！</h1>
-    {% else %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <br>
-                    {% if message %}
-                        <div class="alert alert-warning">{{ message }}</div>
-                    {% endif %}
-                <div class="text-left">
-                    <button class="btn btn-toolbar btn-danger" data-toggle="modal" data-target="#myModal">
-                        上传视频
-                    </button>
-                </div>
-                <!-- 提交文章的表单 -->
-                <form method="post" action="/my_blog/add_blog/" enctype="multipart/form-data">
 
-                    <!-- Django中需要POST数据的地方都必须有csrf_token -->
-                    {% csrf_token %}
-                    <!-- 文章标题 -->
-                    <div class="form-group">
-                        <!-- 标签 -->
-                        <label for="title">文章标题</label>
-                        <!-- 文本框 -->
-                        <input type="text" class="form-control" id="title" name="title">
-                    </div>
-                    <!-- 文章正文 -->
-                    <div class="form-group">
-                        <label for="body">文章正文</label>
-                        <!-- 文本区域 -->
-                        <textarea type="text" class="form-control" id="body" name="body" rows="20"></textarea>
-                    </div>
-                    <!-- 提交按钮 -->
-                    <button type="button" value="upload" class="btn btn-primary">完成</button>
-                </form>
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}主页{% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block css %}
+        <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    {% endblock %}
+  </head>
+  <style>
+    .top {
+        background-color: #404A54;
+        height: 60px;
+    }
 
-                <!-- 模态框（Modal） -->
+    .top * {
+        color: #FFF;
+    }
+
+    .top li {
+        font-size: 18px;
+        margin-top: 7px;
+        margin-left: 10px;
+    }
+
+    .navbar-brand {
+        font-size: 30px;
+        margin-top: 7px;
+    }
+
+    .footer {
+        background-color: #404A54;
+        height: 400px;
+    }
+    .jumbotron {
+        padding: 10px 30px 10px 30px;
+    }
+
+    .jumbotron p {
+        font-size: 14px;
+        line-height: 2.0;
+    }
+
+    .jumbotron h4 {
+        font-size: 16px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 1.8;
+    }
+
+    .beleft {
+        float: left;
+        margin-left: 100px;
+    }
+
+    .carousel {
+        top: -20px;
+        height: 500px;
+        margin-bottom: 30px;
+    }
+
+    .carousel .item {
+        height: 500px;
+    }
+
+    .carousel img {
+        min-height: 500px;
+        width: 100%;
+    }
+    </style>
+
+  <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+            <span class="sr-only">切换导航条</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Blog</a>
+        </div>
+        <div>
+          <ul class="nav navbar-nav">
+            <li><a href="/index/">主页</a></li>
+            <li><a href="/blog/">博客</a></li>
+            <li><a href="/bbs/">ps4上海和谐第一群BBS</a></li>
+          </ul>
+        </div>
+          <ul class="nav navbar-nav navbar-right">
+              {% if request.session.is_login %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        当前在线:{{ request.session.user_name }}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" style="min-width:100%;">
+                        <li><a href="/userinfo/" class="glyphicon glyphicon-user">个人信息</a> </li>
+                        <li><a href="/my_blog/" class="glyphicon glyphicon-tag">我的博客</a></li>
+                        <li><a href="/logout/" class="glyphicon glyphicon-log-out">登出</a> </li>
+                    </ul>
+                </li>
+              {% else %}
+                <li><a href="#" class="glyphicon glyphicon-log-in" data-toggle="modal" data-target="#myModal" id="login" name="login">
+                    登录
+                </a> </li>
+                <li><a href="/register/" class="glyphicon glyphicon-check">注册</a> </li>
+                  <!-- 模态框 ——>
+                  <!-->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                    &times;
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">
-                                    文件上传
-                                </h4>
-                            </div>
-                            <div class="modal-body">
-                                <form action="my_blog.html" enctype="multipart/form-data" method="POST">
-                                    <input class="input-lg" type="file" id="video" name="video" accept="video/mp4"/>
-                                </form>
-                                <div class="progress" style="width: 500px">
-                                    <div id="progress-bar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
-                                        aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                                        <span class="sr-only">40% Complete (success)</span>
+	                <div class="modal-dialog">
+		                <div class="modal-content">
+			                <div class="modal-header">
+				                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				                <h4 class="modal-title" id="myModalLabel">登录页面</h4>
+			                </div>
+			                <div class="modal-body">
+                                {% if message %}
+                                    <div class="alert alert-warning">{{ message }}</div>
+                                {% endif %}
+                                <h2 class="text-center">欢迎登录</h2>
+                                    <div class="form-group">
+                                        <label for="username" class="col-sm-2 control-label">用户名:</label>
+                                        <input type="text" class="form-control" id="username" name="username" />
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="password" class="col-sm-2 control-label">密码:</label>
+                                        <input type="password" class="form-control" id="password" name="password" />
+                                    </div>
+                                        <div id="captcha_div">
+                                            <input type="text" name='captcha' id='captcha' class="form-control" placeholder="Captcha"
+                                                   required style="width: 55%;display: inline-block;margin-right: 8%;">
+                                            <a href="#" class="captcha">
+                                                <img src="" alt="点击换一张" id="id_captcha" >
+                                            </a>
+                                        <input value="{{ hashkey }}" name="hashkey" type="hidden" id="id_captcha_0">
+                                        </div>
+                                    <div class="modal-footer">
+                                    <button type="reset" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-default" id="btn" name="btn">登录</button>
+                                    </div>
                             </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-default" data-dismiss="modal">
-                                    关闭
-                                </button>
-                                <button id="btn" class="btn btn-primary">上传</button>
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal -->
+		                </div><!-- /.modal-content -->
+	                </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+              {% endif %}
+          </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+    {% block content %}
+
+    <div class="img-responsive">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- 轮播（Carousel）指标 -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+            <!-- 轮播（Carousel）项目 -->
+            <!-- 图片大小1920x600 -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="/media/background/1.jpg" alt="First slide">
                 </div>
-            <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
-            <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-            <script>
-                $(function () {
-                    $("#btn").click(function () {
-                        UploadFile();
-                    });
-
-                    $("#video").change(function () {
-                        $("#progress-bar").css("width", 0);
-                    });
-
-                    // ajax + jQuery上传
-                    function UploadFile() {
-                        var filetypes = ["",".mp4",",MP4"];
-                        var filepath = document.getElementById("video").value;
-                            var isnext = false;
-                            var fileend = filepath.substring(filepath.lastIndexOf("."));
-                            if (filetypes && filetypes.length > 0) {
-                                for (var i = 0; i < filetypes.length; i++) {
-                                    if (filetypes[i] == fileend) {
-                                        isnext = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!isnext) {
-                                alert('不接受此文件类型,请上传mp4格式的文件！\r\n');
-                                return false;
-                            }
-
-                        var xhrOnProgress = function (fun) {
-                            xhrOnProgress.onprogress = fun; //绑定监听
-                            //使用闭包实现监听绑
-                            return function () {
-                                //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
-                                var xhr = $.ajaxSettings.xhr();
-                                //判断监听函数是否为函数
-                                if (typeof xhrOnProgress.onprogress !== 'function')
-                                    return xhr;
-                                //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
-                                if (xhrOnProgress.onprogress && xhr.upload) {
-                                    xhr.upload.onprogress = xhrOnProgress.onprogress;
-                                }
-                                return xhr;
-                            }
-                        }
-
-                        var video = $("#video")[0].files[0];
-                        var form = new FormData();
-                        //var title = $('#title').val();
-                        //var body = $('#body').val();
-                        form.append('video', video);
-                        //form.append('title',title);
-                        //form.append('body',body);
-                        form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
-                        $.ajax({
-                            type: 'POST',
-                            url: '',
-                            data: form,
-                            processData: false,  // 告诉jquery不转换数据
-                            contentType: false,  // 告诉jquery不设置内容格式
-                            xhr: xhrOnProgress(function (e) {
-                                var percent = e.loaded / e.total;
-                                $("#progress-bar").css("width", (percent * 500));
-                            }),
-
-                            success: function(arg) {
-                                console.log(arg);
-
-                            }
-                        })
-                    }
-
-                });
-            </script>
-
+                <div class="item">
+                    <img src="/media/background/2.jpg" alt="Second slide">
+                </div>
+                <div class="item">
+                    <img src="/media/background/3.jpg" alt="Third slide">
+                </div>
             </div>
+            <!-- 轮播（Carousel）导航 -->
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
     </div>
 
 
-{% endif %}
-{% endblock %}
+        <div class="music-player">
+	<!-- audio标签 -->
+	<audio class="music-player__audio" ></audio>
+	<!-- 播放器主体 -->
+	<div class="music-player__main">
+		<!-- 模糊背景 -->
+		<div class="music-player__blur"></div>
+		<!-- 唱片 -->
+		<div class="music-player__disc">
+			<!-- 唱片图片 -->
+			<div class="music-player__image">
+				<img width="100%" src="" alt="">
+			</div>
+			<!-- 指针 -->
+			<div class="music-player__pointer"><img width="100%" src="./images/cd_tou.png" alt=""></div>
+		</div>
+		<!-- 控件主体 -->
+		<div class="music-player__controls">
+			<!-- 歌曲信息 -->
+			<div class="music__info">
+				<h3 class="music__info--title">...</h3>
+				<p class="music__info--singer">...</p>
+			</div>
+			<!-- 控件... -->
+			<div class="player-control">
+				<div class="player-control__content">
+					<div class="player-control__btns">
+						<div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+						<div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+						<div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+						<div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+					</div>
+					<div class="player-control__volume">
+						<div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+						<div class="control__volume--progress progress"></div>
+					</div>
+				</div>
+
+				<!-- 歌曲播放进度 -->
+				<div class="player-control__content">
+					<div class="player__song--progress progress"></div>
+					<div class="player__song--timeProgess nowTime">00:00</div>
+					<div class="player__song--timeProgess totalTime">00:00</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+	<!-- 歌曲列表 -->
+	<div class="music-player__list">
+		<ul class="music__list_content">
+			<!-- <li class="music__list__item play">123</li>
+			<li class="music__list__item">123</li>
+			<li class="music__list__item">123</li> -->
+		</ul>
+	</div>
+</div>
 
 
 
+
+    {% endblock %}
+
+
+    <script src="{% static 'js/player.js' %}"></script>
+    <script src="{% static 'js/utill.js' %}"></script>
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script>
+        $(function () {
+            var captchaResult = 0;
+            $('#captcha').blur(function(){
+            // #id_captcha_1为输入框的id，当该输入框失去焦点是触发函数
+            json_data={
+                'response':$('#captcha').val(), // 获取输入框和隐藏字段id_captcha_0的数值
+                'hashkey':$('#id_captcha_0').val()
+            };
+            $.getJSON('/ajax_captcha', json_data, function(data){
+                //ajax发送
+                $('#captcha_status').remove();
+                if(data['status']){ //status返回1为验证码正确， status返回0为验证码错误， 在输入框的后面写入提示信息
+                    $('#captcha').after('<span id="captcha_status" >*验证码正确</span>');
+                }else{
+                    $('#captcha').after('<span id="captcha_status" >*验证码错误</span>');
+                }
+                captchaResult = data['status']
+            });
+            });
+            $('#btn').click(function () {
+                login();
+            });
+            $('#login').click(function () {
+                getCaptcha();
+            });
+            $('#id_captcha').css({'cursor': 'pointer'});
+            $('#id_captcha').click(function(){
+                console.log('click');
+                $.getJSON("/captcha/refresh/",
+                    function(result){
+                    $('#id_captcha').attr('src', result['image_url']);
+                    $('#id_captcha_0').val(result['key'])
+                });
+            });
+            //$('#myCarousel').carousel({interval:2000});//自动轮播
+
+            //登录
+            function login() {
+                var form = new FormData;
+                var username=$('#username').val();
+                var password=$('#password').val();
+                form.append('username', username);
+                form.append('password', password);
+                form.append('captchaResult', captchaResult);
+                form.append('csrfmiddlewaretoken', "{{ csrf_token }}");
+                $.ajax({
+                    type: 'POST',
+                    url: '/index/',
+                    data: form,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        //console.log(data);
+                        if(data['status'] == 1){
+                            alert(data['message']);
+                            location.reload();
+                        }
+                        if(data['status'] != 1){
+                            alert(data['message']);
+                        }
+                    }
+                })
+            }
+            //点击主页面登录刷新验证码
+            function getCaptcha() {
+                console.log('click');
+                $.getJSON("/captcha/refresh/",
+                    function(result){
+                    $('#id_captcha').attr('src', result['image_url']);
+                    $('#id_captcha_0').val(result['key'])
+                });
+            }
+
+        });
+    </script>
+
+
+  </body>
+</html>

@@ -27,7 +27,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', view.index),
     url(r'^index/$', view.index),
-    #url(r'^login/', view.login),
     url(r'^ajax_captcha/', view.ajax_captcha),
     url(r'^register/', view.register),
     url(r'^logout/', view.logout),
