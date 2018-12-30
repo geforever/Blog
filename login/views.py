@@ -11,21 +11,31 @@ from login.forms import RegisterForm
 
 # Create your views here.
 
+def ajax_captcha(request):#判断验证码
+    if request.is_ajax():
+        if request.is_ajax():
+            cs = CaptchaStore.objects.filter(response=request.GET['response'], hashkey=request.GET['hashkey'])
+            if cs:
+                json_data = {'status': 1}
+            else:
+                json_data = {'status': 0}
+            return JsonResponse(json_data)
+        else:
+            # raise Http404
+            json_data = {'status': 0}
+            return JsonResponse(json_data)
 
 def index(request):
     status_duct = {'status': 0, 'message': '登录异常！'}
-    #if request.session.get('is_login', None):
-        #return redirect('/my_blog/')
     if request.is_ajax():
         get_username = request.POST.get('username')
         get_password = request.POST.get('password')
-        captcha = request.POST.get('captcha')  # 前端的验证码
+        #captcha = request.POST.get('captcha')  # 前端的验证码
         try:
             user = User.objects.get(user_name=get_username)
             if get_password == user.password:
-                id_captcha_0 = request.POST.get('id_captcha_0')  # 前端验证码图片
-                get_captcha = CaptchaStore.objects.get(hashkey=id_captcha_0)#测到验证码图片对应的验证码
-                if str(captcha).lower() == get_captcha.response:
+                captcha_result = request.POST.get('captchaResult')
+                if captcha_result == "1":
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.user_name
@@ -47,36 +57,9 @@ def index(request):
     if request.method == 'GET':
         hashkey = CaptchaStore.generate_key()
         image_url = captcha_image_url(hashkey)
+        #print("验证码路径：", image_url)
         captcha = {'hashkey': hashkey, 'image_url': image_url}
         return render(request, 'base.html', captcha)
-
-'''
-def login(request):
-    if request.session.get('is_login', None):
-        return redirect('/index/')
-
-    if request.method == "POST":
-        login_form = UserForm(request.POST)
-        message = "请检查填写内容！"
-        if login_form.is_valid():
-            username = login_form.cleaned_data['username']
-            password = login_form.cleaned_data['password']
-            try:
-                user = User.objects.get(user_name=username)
-                if password == user.password:
-                    request.session['is_login'] = True
-                    request.session['user_id'] = user.id
-                    request.session['user_name'] = user.user_name
-                    return redirect('/index/')
-                else:
-                    message = "密码不正确！"
-            except:
-                message = "用户不存在！"
-        return render(request, 'base.html', locals())#{"message": message}
-    if request.method == "GET":
-        login_form = UserForm()
-        return render(request, 'base.html', {'login_form': login_form})
-'''
 
 
 def register(request):
@@ -127,5 +110,4 @@ def logout(request):
     del request.session['user_id']
     del request.session['user_name']
     return redirect("/index/")
-
 

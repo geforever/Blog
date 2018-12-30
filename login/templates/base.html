@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>{% block title %}base{% endblock %}</title>
+    <title>{% block title %}主页{% endblock %}</title>
 
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -18,7 +18,7 @@
       <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     {% block css %}
-
+        <link rel="stylesheet" href="{% static 'css/login.css' %}">
     {% endblock %}
   </head>
   <body>
@@ -54,7 +54,9 @@
                     </ul>
                 </li>
               {% else %}
-                <li><a href="#" class="glyphicon glyphicon-log-in" data-toggle="modal" data-target="#myModal">登录</a> </li>
+                <li><a href="#" class="glyphicon glyphicon-log-in" data-toggle="modal" data-target="#myModal" id="login" name="login">
+                    登录
+                </a> </li>
                 <li><a href="/register/" class="glyphicon glyphicon-check">注册</a> </li>
                   <!-- 模态框 ——>
                   <!-->
@@ -63,7 +65,7 @@
 		                <div class="modal-content">
 			                <div class="modal-header">
 				                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				                <h4 class="modal-title" id="myModalLabel">登录</h4>
+				                <h4 class="modal-title" id="myModalLabel">登录页面</h4>
 			                </div>
 			                <div class="modal-body">
                                 {% if message %}
@@ -81,7 +83,9 @@
                                         <div id="captcha_div">
                                             <input type="text" name='captcha' id='captcha' class="form-control" placeholder="Captcha"
                                                    required style="width: 55%;display: inline-block;margin-right: 8%;">
-                                            <a href="#" class="captcha"><img src="{{ image_url }}" alt="点击换一张" id="id_captcha"></a>
+                                            <a href="#" class="captcha">
+                                                <img src="" alt="点击换一张" id="id_captcha" >
+                                            </a>
                                         <input value="{{ hashkey }}" name="hashkey" type="hidden" id="id_captcha_0">
                                         </div>
                                     <div class="modal-footer">
@@ -100,23 +104,52 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script>
         $(function () {
+            var captchaResult = 0;
+            $('#captcha').blur(function(){
+            // #id_captcha_1为输入框的id，当该输入框失去焦点是触发函数
+            json_data={
+                'response':$('#captcha').val(), // 获取输入框和隐藏字段id_captcha_0的数值
+                'hashkey':$('#id_captcha_0').val()
+            };
+            $.getJSON('/ajax_captcha', json_data, function(data){
+                //ajax发送
+                $('#captcha_status').remove();
+                if(data['status']){ //status返回1为验证码正确， status返回0为验证码错误， 在输入框的后面写入提示信息
+                    $('#captcha').after('<span id="captcha_status" >*验证码正确</span>');
+                }else{
+                    $('#captcha').after('<span id="captcha_status" >*验证码错误</span>');
+                }
+                captchaResult = data['status']
+            });
+            });
             $('#btn').click(function () {
                 login();
             });
+            $('#login').click(function () {
+                getCaptcha();
+            });
+            $('#id_captcha').css({'cursor': 'pointer'});
+            $('#id_captcha').click(function(){
+                console.log('click');
+                $.getJSON("/captcha/refresh/",
+                    function(result){
+                    $('#id_captcha').attr('src', result['image_url']);
+                    $('#id_captcha_0').val(result['key'])
+                });
+            });
+
+            //登录
             function login() {
                 var form = new FormData;
                 var username=$('#username').val();
                 var password=$('#password').val();
-                var captcha=$('#captcha').val();
-                var id_captcha_0=$('#id_captcha_0').val();
                 form.append('username', username);
                 form.append('password', password);
-                form.append('captcha', captcha);
-                form.append('id_captcha_0', id_captcha_0);
+                form.append('captchaResult', captchaResult);
                 form.append('csrfmiddlewaretoken', "{{ csrf_token }}");
                 $.ajax({
                     type: 'POST',
-                    url: '',
+                    url: '/index/',
                     data: form,
                     processData: false,
                     contentType: false,
@@ -132,8 +165,19 @@
                     }
                 })
             }
+            //点击主页面登录刷新验证码
+            function getCaptcha() {
+                console.log('click');
+                $.getJSON("/captcha/refresh/",
+                    function(result){
+                    $('#id_captcha').attr('src', result['image_url']);
+                    $('#id_captcha_0').val(result['key'])
+                });
+            }
 
         });
+
+
     </script>
 
 
