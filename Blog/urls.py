@@ -22,6 +22,7 @@ import login.views as view
 import personal_blog.views as blog_view
 import BBS.views as BBS_view
 import userprofile.views as profile_view
+import comment.views as comment_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +39,5 @@ urlpatterns = [
     url(r'^my_blog/add_blog/$', blog_view.add_blog),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     path('blog/article_detail/<int:id>/', blog_view.article_detail, name='article_detail'),
+    path('comment_post/<int:article_id>/', comment_views.Comment_post, name='comment_post')
 ]

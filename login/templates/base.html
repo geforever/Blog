@@ -21,6 +21,16 @@
     {% endblock %}
   </head>
   <style>
+    .modal-backdrop {
+        filter: alpha(opacity=0)!important;
+        opacity: 0!important;
+    }
+    #myModal {
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%,-50%);
+    }
+
     .top {
         background-color: #404A54;
         height: 60px;
@@ -82,7 +92,7 @@
     </style>
 
   <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-inverse" id="nav1">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
@@ -128,9 +138,6 @@
 				                <h4 class="modal-title" id="myModalLabel">登录页面</h4>
 			                </div>
 			                <div class="modal-body">
-                                {% if message %}
-                                    <div class="alert alert-warning">{{ message }}</div>
-                                {% endif %}
                                 <h2 class="text-center">欢迎登录</h2>
                                     <div class="form-group">
                                         <label for="username" class="col-sm-2 control-label">用户名:</label>
@@ -149,8 +156,8 @@
                                         <input value="{{ hashkey }}" name="hashkey" type="hidden" id="id_captcha_0">
                                         </div>
                                     <div class="modal-footer">
-                                    <button type="reset" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                    <button type="button" class="btn btn-default" id="btn" name="btn">登录</button>
+                                        <button type="reset" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                        <button type="button" class="btn btn-default" id="btn" name="btn">登录</button>
                                     </div>
                             </div>
 		                </div><!-- /.modal-content -->
@@ -194,6 +201,31 @@
             </a>
         </div>
     </div>
+        <!-- 播放音乐列表 -->
+        <div id="audioBox">
+        <script type="text/javascript">
+            window.onload = function(){
+                var arr = ["/media/audio/A Flower Blooming in the Slums.mp3","/media/audio/The Price of Freedom.mp3","/media/audio/卡农.mp3"];
+                //把需要播放的歌曲从后往前排，这里已添加两首音乐，可继续添加多个音乐
+                var myAudio = new Audio();
+                myAudio.preload = true;
+                myAudio.controls = true;
+                myAudio.src = arr.pop();         //每次读数组最后一个元素
+                myAudio.addEventListener('ended', playEndedHandler, false);
+                myAudio.play();
+                document.getElementById("audioBox").appendChild(myAudio);
+                myAudio.loop = false;//禁止循环，否则无法触发ended事件
+                function playEndedHandler(){
+                    myAudio.src = arr.pop();
+                    myAudio.autoplay=false;
+                    myAudio.play();
+                    console.log(arr.length);
+                    !arr.length && myAudio.removeEventListener('ended',playEndedHandler,false);//只有一个元素时解除绑定
+                    }
+                }
+        </script>
+        </div>
+
 
 
 
@@ -204,8 +236,6 @@
     {% endblock %}
 
 
-    <script src="{% static 'js/player.js' %}"></script>
-    <script src="{% static 'js/utill.js' %}"></script>
     <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
     <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
@@ -230,6 +260,9 @@
                 captchaResult = data['status']
             });
             });
+
+            $('.modal-backdrop').remove();
+
             $('#btn').click(function () {
                 login();
             });
@@ -245,7 +278,8 @@
                     $('#id_captcha_0').val(result['key'])
                 });
             });
-            //$('#myCarousel').carousel({interval:2000});//自动轮播
+
+
 
             //登录
             function login() {

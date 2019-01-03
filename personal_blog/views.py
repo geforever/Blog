@@ -2,6 +2,8 @@ from django.shortcuts import render,HttpResponse,redirect
 from django.http import JsonResponse
 from personal_blog.models import Blog
 from login.models import User
+from comment.models import Comment
+from userprofile.models import Profile
 from uservideo.models import Uservideo
 from .forms import AddBlogForm
 import datetime
@@ -13,8 +15,8 @@ import os
 
 
 def blog(request):
-    a = Blog.objects.all()
-    return render(request, 'blog.html', {'blogs': a})
+    blogs = Blog.objects.all()
+    return render(request, 'blog.html', {'blogs': blogs})
 
 
 def my_blog(request):
@@ -94,9 +96,22 @@ def add_blog(request):
 
 def article_detail(request, id):
     id = int(id)
+    comments = Comment.objects.filter(comment_blog_id=id)
+    profiles = Profile.objects.all()
     article_detail = Blog.objects.get(id=id)
     if article_detail.blog_video_id:
         uservideo = Uservideo.objects.get(id=article_detail.blog_video_id)
-        return render(request, 'detail.html', {'article_detail': article_detail, 'uservideo': uservideo})
+        return render(request,'detail.html',
+                      {
+                          'article_detail': article_detail,
+                          'uservideo': uservideo,
+                          'comments': comments,
+                          'profiles': profiles
+                      })
     else:
-        return render(request, 'detail.html', {'article_detail': article_detail})
+        return render(request, 'detail.html',
+                      {
+                          'article_detail': article_detail,
+                          'comments': comments,
+                          'profiles': profiles,
+                       })

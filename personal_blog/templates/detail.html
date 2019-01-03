@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}detail{% endblock %}
+{% block title %}详细内容{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
@@ -31,9 +31,90 @@
             <br><pre>{{ article_detail.blog_body }}</pre>><br/>
         </div>
     </div>
-</div>
-</div>
-{% endblock %}
+    <hr style="height:1px;border: none;border-top:1px solid #46b8da;margin: 15px auto; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));"/>
 
+
+    <div>
+        {% if message %}
+              <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+        {% if request.session.is_login %}
+            <div class="form-group">
+                <label for="body">
+                    <strong>我也要发言：</strong>
+                </label>
+                <textarea type="text" class="form-control" id="body" name="body" rows="4"></textarea>
+            </div>
+            <!-- 提交按钮 -->
+            <button type="button" class="btn btn-info" name="comment_sub" id="comment_sub">发送</button>
+        {% else %}
+            <textarea type="text" class="form-control"  rows="4">尚未登录无法评论</textarea>
+        {% endif %}
+    </div>
+    <div class="page-header">
+        <p><h4>评论:</h4></p>
+        <div>
+            {% for comment in comments %}
+                <hr>
+                <p>
+                    {% for profile in profiles %}
+                        {% if comment.comment_user_id_id == profile.user_id %}
+                            {% if profile.avatar %}
+                                <img src="{{ profile.avatar.url }}" style="border-radius: 15%;" height="80" width="80" >
+                            {% else %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <strong style="color: pink">
+                        {{ comment.comment_user_id }}
+                    </strong>于
+                    <span style="color: green">
+                        {{ comment.comment_time|date:"Y-m-d H:i:s" }}
+                    </span> 时说：
+                </p>
+                <pre style="font-family: inherit; font-size: 1em;">{{ comment.comment_content }}</pre>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+</div>
+<script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script>
+$(function () {
+    $("#comment_sub").click(function () {
+        submit();
+    });
+
+    function submit() {
+        var form = new FormData;
+        var body = $('#body').val();
+        form.append("body", body);
+        form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+        $.ajax({
+            type: 'post',
+            url: '/comment_post/{{ article_detail.id }}/',
+            data: form,
+            processData: false,  // 告诉jquery不转换数据
+            contentType: false,
+            success: function (data) {
+                console.log(data);
+                if (data['status'] == 1) {
+                    alert(data['message']);
+                    location.reload();
+                }
+                if (data['status'] != 1) {
+                    alert(data['message']);
+                }
+
+            },
+        });
+    }
+})
+
+</script>
+
+{% endblock %}
 <script src="{% static 'vide7.1.0/js/video.min.js'%}"></script>
 <script src="{% static 'vide7.1.0/js/videojs-ie8.min.js'%}"></script>

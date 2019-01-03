@@ -25,7 +25,7 @@ def ajax_captcha(request):#判断验证码
             json_data = {'status': 0}
             return JsonResponse(json_data)
 
-def index(request):
+def index(request):#登录
     status_duct = {'status': 0, 'message': '登录异常！'}
     if request.is_ajax():
         get_username = request.POST.get('username')
@@ -89,11 +89,11 @@ def register(request):
 
                 new_user = User.objects.create()
                 new_user.user_name = username
-                new_user.password = make_password(password1)
+                new_user.password = password1
                 new_user.email = email
                 new_user.sex = sex
                 new_user.save()
-                return redirect('/login/')
+                return redirect('/index/')
     register_form = RegisterForm()
     return render(request, 'register.html', locals())
 

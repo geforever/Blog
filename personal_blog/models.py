@@ -19,3 +19,5 @@ class Blog(models.Model):
     class Meta:
         ordering = ('-blog_create_time', )
 
+
+
