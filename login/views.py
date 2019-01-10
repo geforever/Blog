@@ -57,7 +57,6 @@ def index(request):#登录
     if request.method == 'GET':
         hashkey = CaptchaStore.generate_key()
         image_url = captcha_image_url(hashkey)
-        #print("验证码路径：", image_url)
         captcha = {'hashkey': hashkey, 'image_url': image_url}
         return render(request, 'base.html', captcha)
 

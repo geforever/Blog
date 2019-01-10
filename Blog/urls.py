@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^ajax_captcha/', view.ajax_captcha),
     url(r'^register/', view.register),
     url(r'^logout/', view.logout),
-    url(r'^userinfo/', profile_view.profile_edit),
+    url(r'^userinfo/$', profile_view.profile_edit),
     url(r'^blog/$', blog_view.blog),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^my_blog/$', blog_view.my_blog),

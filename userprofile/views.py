@@ -8,14 +8,12 @@ from login.models import User
 
 def profile_edit(request):
     id = request.session['user_id']
-    print("用户ID为：",id)
     user = User.objects.get(id=id)
     profile = Profile.objects.get(user_id=id)
     if request.method == 'POST':
         profileform = ProfileForm(request.POST, request.FILES)
         if profileform.is_valid():
             try:
-                print("显示用户昵称：", profileform.cleaned_data['nickname'])
                 nickname = profileform.cleaned_data['nickname']
                 bio = profileform.cleaned_data['bio']
                 birthday = profileform.cleaned_data['birthday']

@@ -23,15 +23,15 @@
                     <!-- 文章标题 -->
                     <div class="form-group">
                         <!-- 标签 -->
-                        <label for="title">文章标题</label>
+                        <label for="title">文章标题：</label>
                         <!-- 文本框 -->
                         <input type="text" class="form-control" id="title" name="title">
                     </div>
                     <!-- 文章正文 -->
                     <div class="form-group">
-                        <label for="body">文章正文</label>
+                        <label for="body">文章正文：</label>
                         <!-- 文本区域 -->
-                        <textarea type="text" class="form-control" id="body" name="body" rows="20"></textarea>
+                        <textarea type="text" class="form-control" id="body" name="body" rows="20" style="resize:none;"></textarea>
                     </div>
                     <!-- 提交按钮 -->
                     <div class="row">
@@ -39,7 +39,7 @@
                             <button type="button" id="up" name="up" class="btn btn-primary">完成</button>
                         </div>
                         <div class="col-md-6 col-lg-6">
-                            <div class="col-lg-offset-8">
+                            <div class="offset-8">
                                 <button class="btn btn-toolbar btn-danger" data-toggle="modal" data-target="#myModal">
                                 上传视频
                                 </button>
@@ -50,15 +50,13 @@
 
                 <!-- 模态框（Modal） -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel">文件上传</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                     &times;
                                 </button>
-                                <h4 class="modal-title" id="myModalLabel">
-                                    文件上传
-                                </h4>
                             </div>
                             <div class="modal-body">
                                 <form action="my_blog.html" enctype="multipart/form-data" method="POST">
@@ -72,9 +70,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-default" data-dismiss="modal">
-                                    关闭
-                                </button>
+                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
                                 <button id="vbtn" class="btn btn-primary">上传</button>
                             </div>
                         </div><!-- /.modal-content -->

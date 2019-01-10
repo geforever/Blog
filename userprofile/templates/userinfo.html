@@ -5,108 +5,105 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <div class="row">
+<div class="container">
+    <div class="col-12">
         <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="col-md-6 col-lg-4">
-            <div class="col-lg-offset-6">
-                <p class="page-header text-info">头像:</p>
-                {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" style="max-width: 100%; border-radius: 15%;">
-                {% else %}
-                    <h1>没头像</h1>
-                {% endif %}
-                <label for="avatar">上传头像:</label>
-                <input class="input-sm" type="file" name="avatar" id="avatar" accept="image/*">
+            <div class="col-6">
+                <div class="">
+                    <p class="page-header text-info">头像:</p>
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" style="border-radius: 15%;" height="200" width="200" >
+                    {% else %}
+                        <h1>没头像</h1>
+                    {% endif %}
+                    <label for="avatar">上传头像:</label>
+                    <input class="input-sm" type="file" name="avatar" id="avatar" accept="image/*">
+                </div>
             </div>
-            </div>
-            <div class="col-md-6 col-lg-8">
-                <div class="col-lg-offset-1">
-                <p class="page-header text-info">个人信息:</p>
-
+            <div class="">
+                <div class="offset-6">
+                    <p class="page-header text-info">个人信息:</p>
                     <div class="form-group">
-                        <label for="nickname" class="col-sm-2 control-label">昵称:</label>
-                        <div class="col-sm-6">
+                        <label for="nickname" class="control-label">昵称:</label>
+                        <div class="">
                             <input type="text" class="form-control" id="nickname" name="nickname" value="{{ profile.nickname }}" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="nickname" class="col-sm-2 control-label">用户名:</label>
-                        <div class="col-sm-6">
+                        <label for="nickname" class="control-label">用户名:</label>
+                        <div class="">
                             <div class="text-info">
                                 <p class="form-control-static">{{ user.user_name }}</p>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="birthday" class="col-sm-2 control-label">生日:</label>
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control" id="birthday" name="birthday" value="{{ profile.birthday }}" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="nickname" class="col-sm-2 control-label">个性标签:</label>
-                        <div class="col-sm-6">
-                            <textarea type="text" class="form-control" id="bio" name="bio" rows="10">{{ profile.bio }}</textarea>
-                        </div>
-                    </div>
-                <div class="row">
-                    <div class="col-md-6 col-lg-6">
-                        <div class="col-sm-offset-5">
-                            <button type="submit" class="btn btn-default" id="btn" name="btn">保存修改</button>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6">
-                        <div class="col-lg-offset-0">
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">重置密码</button>
-                        </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </form>
-
-                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document" style="height: 10px;">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                    &times;
-                                </button>
-                                <h4 class="modal-title" id="myModalLabel">
-                                    重置密码
-                                </h4>
+                        <div class="form-group">
+                            <label for="birthday" class="col-sm-2 control-label">生日:</label>
+                            <div class="">
+                                <input type="text" class="form-control" id="birthday" name="birthday" value="{{ profile.birthday }}" />
                             </div>
-                                <div style="padding: 10px 100px 10px;">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">原密码:</span>
-                                        <input type="password" class="form-control" placeholder="请输入原密码">
-                                    </div>
-                                    <br>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">新密码:</span>
-                                        <input type="password" class="form-control" placeholder="请输入新密码">
-                                    </div>
-                                    <br>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">确认密码:</span>
-                                        <input type="password" class="form-control" placeholder="请再次输入密码">
-                                    </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="nickname" class="col-sm-2 control-label">个性标签:</label>
+                            <div class="">
+                                <textarea type="text" class="form-control" id="bio" name="bio" rows="10">{{ profile.bio }}</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <div class="">
+                                    <button type="submit" class="btn btn-default" id="btn_profile" name="btn_profile">保存修改</button>
                                 </div>
-
-                            <div class="modal-footer">
-                                <button class="btn btn-default" id="forgetpwd" name="forgetpwd">忘记密码</button>
-                                <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                                <button type="button" id="reset_pw" name="reset_pw" class="btn btn-primary">确认</button>
                             </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal -->
+                            <div class="">
+                                <div class="">
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">重置密码</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+        </form>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="height: 10px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            重置密码
+                        </h4>
+                    </div>
+                        <div style="padding: 10px 100px 10px;">
+                            <div class="input-group">
+                                <span class="input-group-addon">原密码:</span>
+                                <input type="password" class="form-control" placeholder="请输入原密码">
+                            </div>
+                            <br>
+                            <div class="input-group">
+                                <span class="input-group-addon">新密码:</span>
+                                <input type="password" class="form-control" placeholder="请输入新密码">
+                            </div>
+                            <br>
+                            <div class="input-group">
+                                <span class="input-group-addon">确认密码:</span>
+                                <input type="password" class="form-control" placeholder="请再次输入密码">
+                            </div>
+                        </div>
 
-
+                    <div class="modal-footer">
+                        <button class="btn btn-default" id="forgetpwd" name="forgetpwd">忘记密码</button>
+                        <button class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" id="reset_pw" name="reset_pw" class="btn btn-primary">确认</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
         </div>
     </div>
+</div>
 
 {% endblock %}
 
