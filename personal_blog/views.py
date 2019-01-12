@@ -22,9 +22,9 @@ def blog(request):
 def my_blog(request):
     user_name = request.session.get('user_name')
     user = User.objects.get(user_name=user_name)
-    my_blog = Blog.objects.filter(author_id=user.id)
+    my_blogs = Blog.objects.filter(author_id=user.id)
     if my_blog:
-        return render(request, 'my_blog.html', {'my_blogs': my_blog})
+        return render(request, 'my_blog.html', {'my_blogs': my_blogs})
     return render(request, 'my_blog.html')
 
 
@@ -99,14 +99,15 @@ def article_detail(request, id):
     comments = Comment.objects.filter(comment_blog_id=id)
     profiles = Profile.objects.all()
     article_detail = Blog.objects.get(id=id)
-    if article_detail.blog_video_id:
+    article_detail.increase_views()
+    if article_detail.blog_video_id:#判断是否有视频
         uservideo = Uservideo.objects.get(id=article_detail.blog_video_id)
         return render(request,'detail.html',
                       {
                           'article_detail': article_detail,
                           'uservideo': uservideo,
                           'comments': comments,
-                          'profiles': profiles
+                          'profiles': profiles,
                       })
     else:
         return render(request, 'detail.html',
@@ -115,3 +116,19 @@ def article_detail(request, id):
                           'comments': comments,
                           'profiles': profiles,
                        })
+
+def article_delete(request):
+    if request.is_ajax():
+        statue_dict = {'status': 0, 'message': "删除异常"}
+        article_id = request.POST.get('article_id')
+        try:
+            del_my_blog = Blog.objects.get(id=article_id)
+            del_my_blog.isDelete = True
+            del_my_blog.save()
+            statue_dict['status'] = 1
+            statue_dict['message'] = "删除成功！"
+        except:
+            statue_dict['status'] = -1
+            statue_dict['message'] = "改文章不存在！"
+        return JsonResponse(statue_dict)
+    return HttpResponse("提交类型错误")

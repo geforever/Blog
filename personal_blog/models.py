@@ -11,13 +11,19 @@ class Blog(models.Model):
     blog_body = models.TextField()
     blog_create_time = models.DateTimeField(default=timezone.now())
     blog_update_time = models.DateTimeField(auto_now=True)
-    blog_video_id = models.IntegerField(max_length=11,null=True)
-
+    blog_video_id = models.IntegerField(max_length=11, null=True)
+    views = models.PositiveIntegerField(default=0)
+    isDelete = models.BooleanField(default=False)
     def __str__(self):
         return self.blog_title
 
     class Meta:
         ordering = ('-blog_create_time', )
+
+
+    def increase_views(self):
+        self.views += 1
+        self.save(update_fields=['views'])
 
 
 

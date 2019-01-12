@@ -12,22 +12,28 @@
         </div>
         <div class="container">
             {% for blog in blogs %}
-            <div class="mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title  bg-secondary text-white">
-                            <a style="color: #fff9fb" href="article_detail/{{ blog.id }}/">
-                                <b>{{ blog.blog_title }}</b>
-                            </a>
-                        </h2>
-                            <p class="text-secondary">{{ blog.blog_body|slice:'100' }}......</p>
-                            <div class="card-footer">
-                                <a class="small text-secondary">{{ blog.blog_update_time }}</a>
-                                <a class="small text-right ">作者:{{ blog.author }}</a>
-                            </div>
+                {% if not blog.isDelete %}
+                <div class="mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title  bg-secondary text-white">
+                                <a style="color: #FFFFFF" href="article_detail/{{ blog.id }}/">
+                                    <b>{{ blog.blog_title }}</b>
+                                </a>
+                            </h2>
+                                <p class="text-secondary">{{ blog.blog_body|slice:'100' }}......</p>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <a class="small text-secondary">{{ blog.blog_update_time }}</a>
+                                        <div class="offset-8">
+                                            <a class="small text-right ">作者:{{ blog.author }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

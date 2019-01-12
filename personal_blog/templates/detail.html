@@ -23,7 +23,7 @@
                 {% else %}
                 {% endif %}
 
-                <div class="col-12 alert alert-info">作者：{{ article_detail.author }} , 更新时间：{{ article_detail.blog_update_time }}</div>
+                <div class="col-12 alert alert-info">作者：{{ article_detail.author }} , 更新时间：{{ article_detail.blog_update_time }} , 点击次数：{{ article_detail.views }}</div>
                 <!-- 文章正文 -->
                 <div class="col-12">
                     <br><pre>{{ article_detail.blog_body }}</pre>><br/>

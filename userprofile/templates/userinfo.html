@@ -5,67 +5,56 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
+<form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 <div class="container">
-    <div class="col-12">
-        <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+    <div class="row">
             {% csrf_token %}
-            <div class="col-6">
-                <div class="">
+            <div class="col-4">
+                <div class="offset-2">
                     <p class="page-header text-info">头像:</p>
                     {% if profile.avatar %}
                         <img src="{{ profile.avatar.url }}" style="border-radius: 15%;" height="200" width="200" >
                     {% else %}
                         <h1>没头像</h1>
                     {% endif %}
+                    <br>
                     <label for="avatar">上传头像:</label>
                     <input class="input-sm" type="file" name="avatar" id="avatar" accept="image/*">
                 </div>
             </div>
-            <div class="">
-                <div class="offset-6">
+            <div class="col-8">
+                <div class="offset-2">
                     <p class="page-header text-info">个人信息:</p>
                     <div class="form-group">
-                        <label for="nickname" class="control-label">昵称:</label>
-                        <div class="">
-                            <input type="text" class="form-control" id="nickname" name="nickname" value="{{ profile.nickname }}" />
-                        </div>
+                        <label for="nickname" class="form-inline">昵称: <input type="text" class="form-control" id="nickname" name="nickname" value="{{ profile.nickname }}" /></label>
                     </div>
                     <div class="form-group">
-                        <label for="nickname" class="control-label">用户名:</label>
-                        <div class="">
-                            <div class="text-info">
-                                <p class="form-control-static">{{ user.user_name }}</p>
-                            </div>
-                        </div>
+                        <label for="nickname" class="form-inline">用户名: {{ user.user_name }}</label>
                     </div>
                     <div class="form-group">
                         <div class="form-group">
-                            <label for="birthday" class="col-sm-2 control-label">生日:</label>
-                            <div class="">
-                                <input type="text" class="form-control" id="birthday" name="birthday" value="{{ profile.birthday }}" />
-                            </div>
+                            <label for="birthday" class="form-inline">生日: <input type="text" class="form-control" id="birthday" name="birthday" value="{{ profile.birthday }}" /></label>
                         </div>
                         <div class="form-group">
-                            <label for="nickname" class="col-sm-2 control-label">个性标签:</label>
+                            <label for="nickname" class="form-inline">个性标签:</label>
                             <div class="">
-                                <textarea type="text" class="form-control" id="bio" name="bio" rows="10">{{ profile.bio }}</textarea>
+                                <textarea type="text" class="form-control" id="bio" name="bio" rows="10" style="resize:none;">{{ profile.bio }}</textarea>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="">
+                            <div class="col-md-6 col-lg-6">
                                 <div class="">
                                     <button type="submit" class="btn btn-default" id="btn_profile" name="btn_profile">保存修改</button>
                                 </div>
                             </div>
-                            <div class="">
-                                <div class="">
+                            <div class="col-md-6 col-lg-6">
+                                <div class="offset-4">
                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">重置密码</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-        </form>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document" style="height: 10px;">
                 <div class="modal-content">
@@ -104,6 +93,8 @@
         </div>
     </div>
 </div>
+</div>
+</form>
 
 {% endblock %}
 
