@@ -5,6 +5,14 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
+<div class="container-fluid">
+<ol class="breadcrumb offset-1" style="background: #eee;margin-top: 30px; margin-bottom: 30px;">
+  <li class="breadcrumb-item"><a href="/index/">Home</a></li>
+  <li class="breadcrumb-item"><a href="/blog/">博客</a></li>
+  <li class="breadcrumb-item"><a href="/my_blog/">我的博客</a></li>
+  <li class="breadcrumb-item"><a href="#">新增博客</a></li>
+</ol>
+</div>
     {%  if not request.session.user_name %}
     <h1>抱歉，没有登录！</h1>
     {% else %}
@@ -31,7 +39,7 @@
                     <div class="form-group">
                         <label for="body">文章正文：</label>
                         <!-- 文本区域 -->
-                        <textarea type="text" class="form-control" id="body" name="body" rows="20" style="resize:none;"></textarea>
+                        <textarea type="text" class="form-control" id="body" name="body" rows="20" wrap="hard" style="resize:none;"></textarea>
                     </div>
                     <!-- 提交按钮 -->
                     <div class="row">

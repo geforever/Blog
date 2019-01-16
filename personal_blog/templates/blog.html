@@ -5,37 +5,61 @@
 {% endblock %}
 {% block content %}
 
+<div class="container-fluid">
+<ol class="breadcrumb offset-1" style="background: #FFFFFF;margin-top: 30px; margin-bottom: 50px">
+  <li class="breadcrumb-item"><a href="/index/">Home</a></li>
+  <li class="breadcrumb-item"><a href="#">博客</a></li>
+</ol>
+</div>
 <div class="container">
-    <div class="col-8">
-        <div class="page-header">
-        <h1>博客</h1>
-        </div>
-        <div class="container">
-            {% for blog in blogs %}
-                {% if not blog.isDelete %}
-                <div class="mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title  bg-secondary text-white">
-                                <a style="color: #FFFFFF" href="article_detail/{{ blog.id }}/">
-                                    <b>{{ blog.blog_title }}</b>
-                                </a>
-                            </h2>
-                                <p class="text-secondary">{{ blog.blog_body|slice:'100' }}......</p>
-                                <div class="card-footer">
-                                    <div class="row">
-                                        <a class="small text-secondary">{{ blog.blog_update_time }}</a>
-                                        <div class="offset-8">
-                                            <a class="small text-right ">作者:{{ blog.author }}</a>
+    <div class="row">
+        <div class="col-8">
+            <div class="container">
+                {% for blog in blogs %}
+                    {% if not blog.isDelete %}
+                    <div class="mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="card-title bg-transparent text-white">
+                                    <a style="color: #0f0f0f" href="article_detail/{{ blog.id }}/">
+                                        <b>{{ blog.blog_title }}</b>
+                                    </a>
+                                </h2>
+                                    <p class="text-secondary">{{ blog.blog_body|slice:'100' }}......</p>
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <a class="small text-secondary">{{ blog.blog_update_time }}</a>
+                                            <div class="offset-6">
+                                                <a class="small">作者:{{ blog.author }}</a>
+                                                <a class="small">, 阅读次数:{{ blog.views }}</a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endif %}
-            {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
+            <div class="col-4">
+                <div>
+                    <h4>阅读量排行</h4>
+                    <hr>
+                    {% for viewRanking in view_ranking %}
+                        <li class="btn btn-outline-info">
+                            <a href="/blog/article_detail/{{ viewRanking.id }}" style="color: black">
+                                >{{ viewRanking.blog_title }}
+                            </a>
+                        </li>
+                    <br>
+                    {% endfor %}
+                </div>
+                <hr>
+            </div>
+
     </div>
 </div>
+
+
 {% endblock %}

@@ -2,22 +2,29 @@
 {% load staticfiles %}
 {% block title %}我的博客{% endblock %}
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
+<div class="container-fluid">
+    <ol class="breadcrumb offset-1" style="background: #FFFFFF;margin-top: 30px; margin-bottom: 50px;">
+      <li class="breadcrumb-item"><a href="/index/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/blog/">博客</a></li>
+      <li class="breadcrumb-item"><a href="#">我的博客</a></li>
+    </ol>
+</div>
     {% if not request.session.is_login %}
     <h1>没有登录，请登录</h1>
     {% else %}
     <div class="container">
         <div class="col-12">
             <h1>{{ request.session.user_name }}的个人博客管理界面</h1>
+            <hr>
             <div>
                 <a href="/my_blog/add_blog/">
-                    <button type="button" class="btn btn-info">新增文章</button>
+                    <button type="button" class="btn btn-outline-info">新增文章</button>
                 </a>
             </div>
             <div class="container">
-                <div class="row mt-4">
+                <div class="row mt-4 jumbotron">
                     {% for my_blog in my_blogs %}
                         {% if not my_blog.isDelete %}
                         <!-- 文章内容 -->
@@ -29,8 +36,8 @@
                                     <p class="card-text">{{ my_blog.blog_body|slice:'50' }}...</p>
                                 </div>
                                 <div class="card-footer">
-                                    <a href="/blog/article_detail/{{ my_blog.id }}/#" class="btn btn-secondary">阅读本文</a>
-                                    <a href="javascript:" class="btn btn-danger offset-4" id="article_delete" name="article_delete" onclick="del_article(this, {{ my_blog.id }}, '{{ my_blog.blog_title }}');" >删除</a>
+                                    <a href="/blog/article_detail/{{ my_blog.id }}/#" class="btn btn-outline-secondary">阅读本文</a>
+                                    <a href="javascript:" class="btn btn-outline-danger offset-4" id="article_delete" name="article_delete" onclick="del_article(this, {{ my_blog.id }}, '{{ my_blog.blog_title }}');" >删除</a>
                                 </div>
                             </div>
                         </div>

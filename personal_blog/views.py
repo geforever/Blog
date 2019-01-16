@@ -16,7 +16,8 @@ import os
 
 def blog(request):
     blogs = Blog.objects.all()
-    return render(request, 'blog.html', {'blogs': blogs})
+    view_ranking = Blog.objects.order_by('views')[::-1]
+    return render(request, 'blog.html', {'blogs': blogs, 'view_ranking': view_ranking[0:5]})
 
 
 def my_blog(request):

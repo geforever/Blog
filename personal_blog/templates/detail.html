@@ -4,12 +4,22 @@
 {% block css %}
 {% endblock %}
 {% block content %}
+
+<div class="container-fluid">
+<ol class="breadcrumb offset-1" style="background: #FFFFFF;margin-top: 30px; margin-bottom: 50px;">
+  <li class="breadcrumb-item"><a href="/index/">Home</a></li>
+  <li class="breadcrumb-item"><a href="/blog/">博客</a></li>
+  <li class="breadcrumb-item"><a href="#">内容：{{ article_detail.blog_title }}</a></li>
+</ol>
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="text-left">
                 <!-- 标题及作者 -->
                 <h1 class="text-left page-header">{{ article_detail.blog_title }}</h1>
+                <hr>
                 <!-- 视频地址 -->
                 {% if article_detail.blog_video_id %}
                 <div class="text-center">
@@ -44,9 +54,9 @@
                         <textarea type="text" class="form-control" id="body" name="body" rows="4" style="resize:none;"></textarea>
                     </div>
                     <!-- 提交按钮 -->
-                    <button type="button" class="btn btn-info" name="comment_sub" id="comment_sub">发送</button>
+                    <button type="button" class="btn btn-outline-info" name="comment_sub" id="comment_sub">发送</button>
                 {% else %}
-                    <textarea type="text" class="form-control"  rows="4" style="resize:none";>尚未登录无法评论</textarea>
+                    <textarea type="text" class="form-control" rows="4" wrap="hard" style="resize:none";>尚未登录无法评论</textarea>
                 {% endif %}
             </div>
             <div class="page-header">
