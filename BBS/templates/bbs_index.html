@@ -1,10 +1,40 @@
+{% load staticfiles %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>论坛主页，正在开发。。。。。。</h1>
-</body>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>Textyle.js</title>
+    <link href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'jquery/css/style.css'%}">
+    <script src="{% static 'bootstrap-4/js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+	</head>
+	<body>
+		<a class="ex1">TEXTYLE</a>
+		<a class="ex2">TEXTYLE</a>
+		<p class="desc">- Simple Text Effect -</p>
+    <script src="{% static 'jquery/js/textyle.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4/js/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
+		<script>
+			$(window).on('load',function(){
+				//simple use
+				$('.ex1').textyle();
+				//you can select options or add callback
+				$('.ex2').textyle({
+									duration : 400,
+									delay : 100,
+									easing : 'swing',
+									callback : function(){
+										$(this).css({
+											color : 'coral',
+											transition : '1s',
+										});
+										$('.desc').css('opacity',1);
+									}
+								});
+			});
+		</script>
+	</body>
 </html>

@@ -6,6 +6,7 @@ from comment.models import Comment
 from userprofile.models import Profile
 from uservideo.models import Uservideo
 from .forms import AddBlogForm
+import markdown
 import datetime
 import os
 
@@ -100,10 +101,15 @@ def article_detail(request, id):
     comments = Comment.objects.filter(comment_blog_id=id)
     profiles = Profile.objects.all()
     article_detail = Blog.objects.get(id=id)
-    article_detail.increase_views()
+    article_detail.blog_body = markdown.markdown(article_detail.blog_body,
+                                                 extensions=[
+                                                     'markdown.extensions.extra',
+                                                     'markdown.extensions.codehilite',
+                                                 ])
+    article_detail.increase_views()#点击量
     if article_detail.blog_video_id:#判断是否有视频
         uservideo = Uservideo.objects.get(id=article_detail.blog_video_id)
-        return render(request,'detail.html',
+        return render(request, 'detail.html',
                       {
                           'article_detail': article_detail,
                           'uservideo': uservideo,

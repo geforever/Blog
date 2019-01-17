@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% block title %}Blog{% endblock %}
 {% block css %}
+    <link rel="stylesheet" href="{% static 'css/card_shadow.css' %}">
 {% endblock %}
 {% block content %}
 
@@ -18,6 +19,7 @@
                 {% for blog in blogs %}
                     {% if not blog.isDelete %}
                     <div class="mb-4">
+                    <div class="">
                         <div class="card">
                             <div class="card-body">
                                 <h2 class="card-title bg-transparent text-white">
@@ -37,6 +39,7 @@
                                     </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                     {% endif %}
                 {% endfor %}

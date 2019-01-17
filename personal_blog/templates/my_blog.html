@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% block title %}我的博客{% endblock %}
 {% block css %}
+    <link rel="stylesheet" href="{% static 'css/card_shadow.css' %}">
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -30,7 +31,7 @@
                         <!-- 文章内容 -->
                         <div class="col-6 mb-4">
                         <!-- 卡片容器 -->
-                            <div class="card h-100">
+                            <div class="card h-100" style="width:30vw">
                                 <h4 class="card-header">{{ my_blog.blog_title }}</h4>
                                 <div class="card-body">
                                     <p class="card-text">{{ my_blog.blog_body|slice:'50' }}...</p>
