@@ -9,6 +9,7 @@
     <title>{% block title %}主页{% endblock %}</title>
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/link.css' %}">
     <script src="{% static 'bootstrap-4/js/bootstrap.js' %}"></script>
     <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
@@ -107,10 +108,23 @@
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
     }
-    pre {
+    pre{
         white-space: pre-wrap;
         word-wrap: break-word;
     }
+    body .circle_inner {
+        overflow: hidden;
+        margin: auto;
+        z-index: 1;
+        -webkit-transition: all .3s;
+        transition: all .3s;
+        position: relative;
+}
+    body .circle_inner:hover {
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+}
+
   </style>
 
   <body>
@@ -120,13 +134,13 @@
         <div>
           <ul class="nav navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/index/">主页</a>
+                <a class="nav-link link" href="/index/"><span>主页</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/blog/">博客</a>
+                <a class="nav-link link" href="/blog/"><span>博客</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/bbs/">ps4上海和谐第一群BBS</a>
+                <a class="nav-link link" href="/bbs/"><span>ps4上海和谐第一群BBS</span></a>
             </li>
           </ul>
         </div>
@@ -134,11 +148,8 @@
           <ul class="navbar-nav ml-auto">
               {% if request.session.is_login %}
                 <div class="dropdown">
-                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
-                        当前在线:{{ request.session.user_name }}
-                        <span class="caret"></span>
-                    </button>
-                    <div class="dropdown-menu" style="min-width:100%;">
+                    <img class="circle_inner" src="{{ request.session.user_profile }}" style="border-radius: 30%;" height="50" width="50" data-toggle="dropdown">
+                    <div class="dropdown-menu dropdown-menu-right" style="min-width:100%;">
                         <a href="/userinfo/" class="glyphicon glyphicon-user dropdown-item">个人信息</a>
                         <a href="/my_blog/" class="glyphicon glyphicon-tag dropdown-item">我的博客</a>
                         <a href="/logout/" class="glyphicon glyphicon-log-out dropdown-item">登出</a>
@@ -158,11 +169,11 @@
                                 <h2 class="text-center">欢迎登录</h2>
                                     <div class="form-group">
                                         <label for="username" >用户名:</label>
-                                        <input type="text" class="form-control" id="username" name="username" />
+                                        <input type="text" class="form-control" placeholder="请输入用户名" id="username" name="username" />
                                     </div>
                                     <div class="form-group">
                                         <label for="password" >密码:</label>
-                                        <input type="password" class="form-control" id="password" name="password" />
+                                        <input type="password" class="form-control" placeholder="请输入密码" id="password" name="password" />
                                     </div>
                                         <div id="captcha_div">
                                             <input type="text" name='captcha' id='captcha' class="form-control" placeholder="Captcha"

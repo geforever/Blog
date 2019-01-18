@@ -3,6 +3,7 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from login.models import User
+from userprofile.models import Profile
 #from login.forms import UserForm
 from login.forms import Captcha
 from captcha.models import CaptchaStore
@@ -30,7 +31,6 @@ def index(request):#登录
     if request.is_ajax():
         get_username = request.POST.get('username')
         get_password = request.POST.get('password')
-        #captcha = request.POST.get('captcha')  # 前端的验证码
         try:
             user = User.objects.get(user_name=get_username)
             if get_password == user.password:
@@ -39,6 +39,7 @@ def index(request):#登录
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.user_name
+                    request.session['user_profile'] = user.profile.avatar.url
                     status_duct['status'] = 1
                     status_duct['message'] = "登录成功！"
                     return JsonResponse(status_duct)
@@ -58,7 +59,14 @@ def index(request):#登录
         hashkey = CaptchaStore.generate_key()
         image_url = captcha_image_url(hashkey)
         captcha = {'hashkey': hashkey, 'image_url': image_url}
-        return render(request, 'base.html', captcha)
+        '''
+        if request.session.get('is_login'):
+            user_id = request.session.get('user_id')
+            user_profile = Profile.objects.get(user_id=user_id)
+            profile = {'user_profile', user_profile}
+            return render(request, 'base.html', locals())
+        '''
+        return render(request, 'base.html', locals())
 
 
 def register(request):

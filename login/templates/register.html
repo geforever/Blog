@@ -5,6 +5,12 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 {% block content %}
+<div class="container-fluid">
+<ol class="breadcrumb offset-1" style="background: #eee;margin-top: 30px; margin-bottom: 30px;">
+  <li class="breadcrumb-item"><a href="/index/">Home</a></li>
+  <li class="breadcrumb-item"><a href="#">注册</a></li>
+</ol>
+</div>
     <div class="container">
         <div class="col-md-4 col-md-offset-4">
           <form class='form-register' action="/register/" method="post">

@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^bbs/', BBS_view.bbs_index),
     url(r'^my_blog/add_blog/$', blog_view.add_blog),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
+    url(r'^resetpwd/$', profile_view.reset_pwd),
     path('blog/article_detail/<int:id>/', blog_view.article_detail, name='article_detail'),
     path('comment_post/<int:article_id>/', comment_views.Comment_post, name='comment_post'),
 ]

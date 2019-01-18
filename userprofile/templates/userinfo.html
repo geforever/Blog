@@ -65,34 +65,31 @@
             <div class="modal-dialog" role="document" style="height: 10px;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                            &times;
-                        </button>
                         <h4 class="modal-title" id="myModalLabel">
                             重置密码
                         </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
                     </div>
                         <div style="padding: 10px 100px 10px;">
                             <div class="input-group">
-                                <span class="input-group-addon">原密码:</span>
-                                <input type="password" class="form-control" placeholder="请输入原密码">
+                                <input type="password" class="form-control" placeholder="请输入原密码" id="old_pwd">
                             </div>
                             <br>
                             <div class="input-group">
-                                <span class="input-group-addon">新密码:</span>
-                                <input type="password" class="form-control" placeholder="请输入新密码">
+                                <input type="password" class="form-control" placeholder="请输入新密码" id="new_pwd_1">
                             </div>
                             <br>
                             <div class="input-group">
-                                <span class="input-group-addon">确认密码:</span>
-                                <input type="password" class="form-control" placeholder="请再次输入密码">
+                                <input type="password" class="form-control" placeholder="请再次输入密码" id="new_pwd_2">
                             </div>
                         </div>
 
                     <div class="modal-footer">
                         <button class="btn btn-default" id="forgetpwd" name="forgetpwd">忘记密码</button>
-                        <button class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" id="reset_pw" name="reset_pw" class="btn btn-primary">确认</button>
+                        <button type="reset" class="btn btn-default">重置</button>
+                        <button type="button" id="reset_pw" name="reset_pw" class="btn btn-outline-info">确认</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
@@ -101,6 +98,39 @@
 </div>
 </div>
 </form>
+<script>
+    $(function () {
+        $('#reset_pw').click(function () {
+            reset_pwd()
+        });
+        function reset_pwd() {
+            var form = new FormData();
+            var old_pwd = $('#old_pwd').val();
+            var new_pwd_1 = $('#new_pwd_1').val();
+            var new_pwd_2 = $('#new_pwd_2').val();
+            form.append('old_pwd', old_pwd);
+            form.append('new_pwd_1', new_pwd_1);
+            form.append('new_pwd_2', new_pwd_2);
+            form.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+            $.ajax({
+                type: 'post',
+                url: '/resetpwd/',
+                data: form,
+                processData: false,  // 告诉jquery不转换数据
+                contentType: false,
+                success: function (data) {
+                    if(data['status'] != 1){
+                        alert(data['message']);
+                    }
+                    if(data['status'] == 1){
+                        alert(data['message']);
+                        location.reload();
+                    }
+                }
+            })
+        }
+    })
+</script>
 
 {% endblock %}
 

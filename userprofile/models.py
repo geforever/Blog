@@ -10,7 +10,7 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=128, blank=True)#昵称
     bio = models.TextField(max_length=500, blank=True)#个性签名
     birthday = models.CharField(max_length=20, default='1980-01-01')#出生日期
-    avatar = models.ImageField(upload_to='avatar/%Y%m%d', blank=True)
+    avatar = models.ImageField(upload_to='avatar/%Y%m%d', blank=True, default='avatar/default.jpg')
 
     def __str__(self):
         return 'user {}'.format(self.user.user_name)

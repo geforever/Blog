@@ -1,0 +1,52 @@
+.link{
+   display: inline-block;
+   position: relative;
+}
+.link span{
+   display: block;
+   padding: 7px 15px;
+   font-size: 23px;
+   color: #e0e0e0;
+   letter-spacing: 1px;
+   text-transform: uppercase;
+   text-align: center;
+   transition: all 0.5s ease 0s;
+}
+.link:hover span{ color: #ff5c19; }
+.link:before,
+.link:after,
+.link span:before,
+.link span:after{
+   content: "";
+   width: 25%;
+   height: 100%;
+   border-radius: 30px;
+   border: 3px solid #ff5c19;
+   border-left: none;
+   border-right: none;
+   position: absolute;
+   top: 0;
+   left: 0;
+   opacity: 0;
+   transform: scale(0.8);
+   transition: all 0.3s ease 0s;
+}
+.link:after{ left: 25%; }
+.link span:before{ left: 50%; }
+.link span:after{ left: 75%; }
+.link:hover:before,
+.link:hover:after,
+.link:hover span:before,
+.link:hover span:after{
+   border-radius: 0;
+   opacity: 1;
+   transform: scale(1);
+}
+.link:hover:before{ border-left: 3px solid #ff5c19; }
+.link:hover span:after{ border-right: 3px solid #ff5c19; }
+@media only screen and (max-width: 990px){
+    .link span{ font-size: 20px; }
+}
+@media only screen and (max-width: 767px){
+    .link{ margin-bottom: 20px; }
+}
