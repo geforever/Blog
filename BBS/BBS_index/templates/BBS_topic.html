@@ -1,0 +1,27 @@
+{% extends 'BBS_base.html' %}
+{% load staticfiles %}
+{% block title %}帖子{% endblock %}
+
+{% block content %}
+<div class="container">
+    <ol class="breadcrumb offset-1" style="background: #FFFFFF;margin-top: 30px; margin-bottom: 50px">
+          <li class="breadcrumb-item"><a href="/BBS_index/">Home:论坛主页</a></li>
+          <li class="breadcrumb-item"><a href="#">{{ module.module_name }}</a></li>
+    </ol>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <div class="offset-2">
+            {% for topic in topics %}
+                <div class="card">
+                    <a href="topic_{{ topic.id }}/"><p>{{ topic }}</p></a>
+                    <p>{{ topic.tUser }}</p>
+                    <p>{{ topic.tCreate_time }}</p>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

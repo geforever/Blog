@@ -17,7 +17,7 @@ import os
 
 def blog(request):
     blogs = Blog.objects.all()
-    view_ranking = Blog.objects.order_by('views')[::-1]
+    view_ranking = Blog.objects.order_by('views')[::-1]#阅读量
     return render(request, 'blog.html', {'blogs': blogs, 'view_ranking': view_ranking[0:5]})
 
 
@@ -59,7 +59,7 @@ def add_blog(request):
                     f.write(chunk)
                 f.close()
             create_video = Uservideo.objects.create(#执行SQL语句
-                video_name=video_name, video_path=file_path,video_owner_id_id=user.id
+                video_name=video_name, video_path=file_path, video_owner_id_id=user.id
             )
             create_video.save()
             title = request.POST.get('title')

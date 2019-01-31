@@ -19,6 +19,8 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ('-blog_create_time', )
+        verbose_name = "博客"
+        verbose_name_plural = "博客"
 
 
     def increase_views(self):

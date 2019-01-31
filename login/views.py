@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from login.models import User
 from userprofile.models import Profile
-#from login.forms import UserForm
+from login.forms import UserForm
 from login.forms import Captcha
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
@@ -67,6 +67,32 @@ def index(request):#登录
             return render(request, 'base.html', locals())
         '''
         return render(request, 'base.html', locals())
+
+
+def login(request):
+    if request.session.get('is_login', None):
+        return redirect('/BBS_index/')
+
+    if request.method == "POST":
+        login_form = UserForm(request.POST)
+        message = "请检查填写内容！"
+        if login_form.is_valid():
+            username = login_form.cleaned_data['username']
+            password = login_form.cleaned_data['password']
+            try:
+                user = User.objects.get(user_name=username)
+                if password == user.password:
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.user_name
+                    return redirect('/BBS_index/')
+                else:
+                    message = "密码不正确！"
+            except:
+                message = "用户不存在！"
+        return render(request, 'login.html', locals())
+    login_form = UserForm()
+    return render(request, 'login.html', locals())
 
 
 def register(request):

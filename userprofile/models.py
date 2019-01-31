@@ -12,6 +12,10 @@ class Profile(models.Model):
     birthday = models.CharField(max_length=20, default='1980-01-01')#出生日期
     avatar = models.ImageField(upload_to='avatar/%Y%m%d', blank=True, default='avatar/default.jpg')
 
+    class Meta:
+        verbose_name = "个人信息"
+        verbose_name_plural = "个人信息"
+
     def __str__(self):
         return 'user {}'.format(self.user.user_name)
 @receiver(post_save, sender=User)

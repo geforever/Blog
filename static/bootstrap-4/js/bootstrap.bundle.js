@@ -3885,7 +3885,7 @@
       /**
        * Collection of utilities useful when writing custom modifiers.
        * Starting from version 1.7, this method is available only if you
-       * include `popper-utils.js` before `popper.js`.
+       * include `popper-utils.js` before `Popper.js`.
        *
        * **DEPRECATION**: This way to access PopperUtils is deprecated
        * and will be removed in v2! Use the PopperUtils module directly instead.
@@ -4067,7 +4067,7 @@
            * Popper - https://popper.js.org
            */
           if (typeof Popper === 'undefined') {
-            throw new TypeError('Bootstrap dropdown require Popper.js (https://popper.js.org)');
+            throw new TypeError('Bootstrap dropdown require Popper.js (https://Popper.js.org)');
           }
 
           var referenceElement = this._element;
@@ -5089,7 +5089,7 @@
          * Popper - https://popper.js.org
          */
         if (typeof Popper === 'undefined') {
-          throw new TypeError('Bootstrap tooltips require Popper.js (https://popper.js.org)');
+          throw new TypeError('Bootstrap tooltips require Popper.js (https://Popper.js.org)');
         } // private
 
 

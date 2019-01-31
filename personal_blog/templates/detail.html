@@ -56,7 +56,7 @@
                     <!-- 提交按钮 -->
                     <button type="button" class="btn btn-outline-info" name="comment_sub" id="comment_sub">发送</button>
                 {% else %}
-                    <textarea type="text" class="form-control" rows="4" wrap="hard" style="resize:none";>尚未登录无法评论</textarea>
+                    <textarea type="text" class="form-control" placeholder="尚未登录无法评论!" rows="4" readonly wrap="hard" style="resize:none"></textarea>
                 {% endif %}
             </div>
             <div class="page-header">
@@ -90,7 +90,6 @@
     </div>
 </div>
 <script type="text/javascript" src="{% static 'js/jquery-form.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 <script>
 $(function () {
     $("#comment_sub").click(function () {

@@ -14,12 +14,11 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-8">
+        <div class="col-8 col-lg-8">
             <div class="container">
                 {% for blog in blogs %}
                     {% if not blog.isDelete %}
                     <div class="mb-4">
-                    <div class="">
                         <div class="card">
                             <div class="card-body">
                                 <h2 class="card-title bg-transparent text-white">
@@ -40,12 +39,11 @@
                             </div>
                         </div>
                     </div>
-                    </div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
-            <div class="col-4">
+            <div class="col-4 col-lg-4">
                 <div>
                     <h4>阅读量排行</h4>
                     <hr>

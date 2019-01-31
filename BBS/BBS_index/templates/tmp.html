@@ -1,0 +1,72 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %}主题页面{% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap-4/js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/popper/umd/popper.min.js' %}"></script>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+<h1>论坛主页</h1>
+<hr>
+<div class="container-fluid">
+    <ol class="breadcrumb offset-1" style="background: #FFFFFF;margin-top: 30px; margin-bottom: 50px">
+          <li class="breadcrumb-item"><a href="/BBS_index/">Home:论坛主页</a></li>
+          <li class="breadcrumb-item"><a href="/BBS_index/module_{{ module_id }}">帖子</a></li>
+          <li class="breadcrumb-item"><a href="#">{{ topic_detail.tTitle }}</a></li>
+    </ol>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <p>
+                <img src="{{ topic_user_profile.avatar.url }}" style="border-radius: 15%;" height="80" width="80" >
+                {{ topic_detail.tUser }}:
+            </p>
+        </div>
+        <div class="col-8">
+            <h1>{{ topic_detail.tTitle }}</h1>
+            <p style="color: #0069d9">
+                创建于：{{ topic_detail.tCreate_time }}
+            </p>
+            <hr>
+            <p>{{ topic_detail.tBody|safe }}</p>
+            <hr style="height:1px;border: none;border-top:1px solid #46b8da;margin: 15px auto; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));"/>
+            <div>
+                {% for bbs_comment in bbs_comments %}
+                    {% for comment_profile in bbs_comment_prifile %}
+                        {% if comment_profile.user_id == bbs_comment.BBScomment_user_id_id %}
+                            <div class="card mt-4">
+                                <div>
+                                    <img src="{{ comment_profile.avatar.url }}" style="border-radius: 15%;" height="60" width="60" >
+                                    {{ comment_profile.user }}：
+                                    {{ bbs_comment.BBScomment_content }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="body">
+                    <strong>我要评论：</strong>
+                </label>
+                <textarea type="text" class="form-control" id="body" name="body" rows="4" style="resize:none;"></textarea>
+            </div>
+            <button type="button" class="btn btn-outline-info" name="Tcomment_btn" id="Tcomment_btn">发送</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

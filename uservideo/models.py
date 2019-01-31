@@ -14,3 +14,5 @@ class Uservideo(models.Model):
 
     class Meta:
         ordering = ('video_create_time',)
+        verbose_name = "视频"
+        verbose_name_plural = "视频"

@@ -1,0 +1,38 @@
+{% extends 'BBS_base.html' %}
+{% load staticfiles %}
+{% block title %}新增帖子{% endblock %}
+
+{% block content %}
+<div class="container">
+    <ol class="breadcrumb offset-1" style="background: #FFFFFF;margin-top: 30px; margin-bottom: 50px">
+      <li class="breadcrumb-item"><a href="/BBS_index/">Home:论坛主页</a></li>
+      <li class="breadcrumb-item"><a href="#">新增帖子</a></li>
+    </ol>
+</div>
+<div class="container">
+    <div class="row">
+            <div class="form-group col-8 offset-2">
+              {% if message %}
+                  <div class="alert alert-warning">{{ message }}</div>
+              {% endif %}
+                <form method="post" action="/BBS_index/addTopic/">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" id="topic_title" name="topic_title" placeholder="主题...">
+                    <label for="model_select">选择主题:</label>
+                    <select class="form-control" id="model_select" name="model_select">
+                        {% for module in modules %}
+                            <option value={{ module.id }}>{{ module }}</option>
+                        {% endfor %}
+                    </select>
+                    <hr>
+                    <textarea type="text" class="form-control" id="topic_body" name="topic_body" rows="8" style="resize:none;"></textarea>
+                    <script src="{% static 'js/markdownEdit_JS/simplemde.min.js'%}"></script>
+                    <script>
+                        var simplemde = new SimpleMDE();
+                    </script>
+                    <button type="submit" class="btn btn-outline-success" id="topic_submit" name="topic_submit">提交</button>
+                </form>
+            </div>
+    </div>
+</div>
+{% endblock %}

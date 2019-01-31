@@ -39,11 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login',
     'personal_blog',
-    'BBS',
     'captcha',
     'userprofile',
     'uservideo',
     'comment',
+    'BBS.BBS_index',
+    'BBS.Topic',
 
 ]
 
